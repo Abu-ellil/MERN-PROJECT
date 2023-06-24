@@ -80,7 +80,7 @@ useEffect(() => {
         }}
       >
         {!cookies.access_token ? (
-          <h1>you are not logged in </h1>
+         navigate('/login')
         ) : (
           <div className="todos-main">
             <div className="add-todo">
