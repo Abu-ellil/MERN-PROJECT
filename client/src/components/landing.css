@@ -1,0 +1,15 @@
+.main-container{
+	display: flex;
+	
+}
+.todos-main{}
+.add-todo{}
+.todo-list{}
+.todo-ul{}
+.list-item{
+	display: flex;
+	align-items: center;
+	background-color: #fff;
+	border: 1px solid #33333330;
+	margin: 1rem;
+}
