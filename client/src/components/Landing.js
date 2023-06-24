@@ -14,12 +14,45 @@ import {
 import "./landing.css";
 
 const Landing = () => {
+  const userId = window.localStorage.getItem('userId')
   const [cookies, setCookies] = useCookies(["access_token"]);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [lang, setLang] = useState(true);
-  const [todos, setTodos] = useState([]);
-  const [isChecked, setIsChecked] = useState(true);
+  const [todosList, setTodosList] = useState([]);
   const navigate = useNavigate();
+ const [todo, setTodo] = useState({
+    text:'',
+    state:false,
+    userOwner:userId
+  })
+/////////////////////
+
+/////////////////////  
+const getTodoList = async()=>{
+  try {
+   await axios.get("http://localhost:8080/todos")
+    .then((resp) => setTodosList(resp.data))
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+  const changeHandler =(e)=>{
+    e.preventDefault()
+    const {name, value} = e.target
+    setTodo({...todo,[name]:value})
+    console.log(todo);
+  }
+
+  const addTodo =async(e)=>{
+    e.preventDefault()
+    try {
+      await axios.post("http://localhost:8080/todos",todo)
+      alert('todo added successfully')
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const toggelMode = (e) => {
     e.preventDefault();
@@ -29,15 +62,10 @@ const Landing = () => {
     e.preventDefault();
     setLang(!lang);
   };
-  const todosList = axios
-    .get("http://localhost:8080/todos")
-    .then((resp) => setTodos(resp.data))
-    .catch((err) => console.log(err));
 
-  const handleCheckboxChange = () => {
-    setIsChecked(!isChecked);
-  };
-
+useEffect(() => {
+  getTodoList();
+}, []);
   return (
     <div className={isDarkMode ? "dark-mode" : "light-mode"}>
       <Navbar />
@@ -55,17 +83,33 @@ const Landing = () => {
           <h1>you are not logged in </h1>
         ) : (
           <div className="todos-main">
-            <div className="add-todo"></div>
+            <div className="add-todo">
+              <label className="checkbox-container">
+                <input type="checkbox" checked={false} />
+                <span className="checkmark"></span>
+              </label>
+              <form className="list-item" onBlur={addTodo}>
+                <label htmlFor="text"></label>
+                <input
+                  type="text"
+                  id="text"
+                  name="text"
+                  onChange={changeHandler}
+                />
+              </form>
+            </div>
             <div className="todo-list">
               <ul className="todo-ul">
-                {todos.map((todo) => {
+                {todosList.map((todo) => {
                   return (
                     <div className="list-item">
                       <label className="checkbox-container">
                         <input
                           type="checkbox"
-                          checked={isChecked}
-                          onChange={handleCheckboxChange}
+                          checked={todo.state}
+                          onClick={() => {
+                            return console.log(todo.state);
+                          }}
                         />
                         <span className="checkmark"></span>
                       </label>

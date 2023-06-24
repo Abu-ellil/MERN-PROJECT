@@ -1,15 +1,84 @@
 .main-container{
 	display: flex;
+	justify-content: center;
 	
 }
-.todos-main{}
-.add-todo{}
+.todos-main{padding-top: 4rem;
+	width: 40%;}
+.add-todo{
+	display: flex;
+	align-items: center;
+}
 .todo-list{}
-.todo-ul{}
+.todo-ul{
+	color: #494C6B;
+font-size: 18px;
+font-family: Josefin Sans;
+letter-spacing: -0.25px;
+}
 .list-item{
+	font-size: 1.5rem;
 	display: flex;
 	align-items: center;
 	background-color: #fff;
 	border: 1px solid #33333330;
+	padding:.5rem 1rem ;
 	margin: 1rem;
+	border-radius: 5px;
+	border: none;
+}
+
+
+
+
+
+
+
+
+.checkbox-container {
+  display: inline-block;
+  position: relative;
+  padding-left: 30px;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+  border-radius: 50%;
+}
+
+.checkbox-container input:checked ~ .checkmark {
+  background-color: var(--primary-color);
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.checkbox-container .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
 }
