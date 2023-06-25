@@ -1,6 +1,6 @@
 import backgroundImage from "../assets/main-cover.png";
+
 import React, { useState, useEffect } from "react";
-import night from "../assets/Combined Shape.svg";
 import { useCookies } from "react-cookie";
 import { Navbar } from "./nav/Navbar";
 import axios from "axios";
@@ -18,9 +18,8 @@ const Landing = () => {
   const [cookies, setCookies] = useCookies(["access_token"]);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [doneTodos, setDoneTodos] = useState();
-  const [lang, setLang] = useState(true);
+  const [En, setAr] = useState(true);
   const [completedTodos, setCompletedTodos] = useState([]);
-  const [todosList, setTodosList] = useState([]);
   const [allTodosList, setAllTodo] = useState([]);;
   const [activeTodos, setActiveTodos] = useState([]);
   const navigate = useNavigate();
@@ -29,6 +28,7 @@ const Landing = () => {
     state: false,
     userOwner: userId,
   });
+   const [todosList, setTodosList] = useState(allTodosList);
 
   useEffect(() => {
     const getTodoList = async () => {
@@ -55,12 +55,14 @@ const Landing = () => {
 
     getCompletedTodoList();
     getTodoList();
-  }, [userId, doneTodos]);
+  }, [userId]);
 useEffect(() => {
   setActiveTodos(
-    todosList.filter((todo) => !completedTodos.includes(todo._id))
+    allTodosList.filter((todo) => !completedTodos.includes(todo._id["$oid"]))
   );
-}, [todosList, completedTodos]);
+}, [allTodosList, completedTodos, userId]);
+
+
   ///////////////
   const changeHandler = (e) => {
     e.preventDefault();
@@ -87,12 +89,11 @@ useEffect(() => {
   const toggelMode = (e) => {
     e.preventDefault();
     setIsDarkMode(!isDarkMode);
-    console.log("toggel");
   };
 
   const toggelLang = (e) => {
     e.preventDefault();
-    setLang(!lang);
+    setAr(!En);
   };
 
   const removeFromDone = async (todoId) => {
@@ -117,22 +118,6 @@ useEffect(() => {
     } else {
       await removeFromDone(todoId);
     }
-  };
-
-  const AllListHandler = () => {
-    setTodosList(todosList);
-    console.log('11111111111');
-  };
-
-  const activeListHandler = () => {
-    const active = todosList.filter(
-      (todo) => !completedTodos.includes(todo._id)
-    );
-    setTodosList(active);
-  };
-
-  const compListHandler = () => {
-    setTodosList(todosList.filter((todo) => completedTodos.includes(todo._id)));
   };
 
   const deleteCompletedTodos = async () => {
@@ -163,6 +148,25 @@ useEffect(() => {
 
   const isDone = (id) => doneTodos.includes(id);
 
+  const AllListHandler = () => {
+    setTodosList(allTodosList);
+  };
+
+  const activeListHandler = () => {
+    const active = allTodosList.filter(
+      (todo) => !completedTodos.includes(todo._id["$oid"])
+    );
+    setTodosList(active);
+  };
+
+  const compListHandler = () => {
+    const completed = allTodosList.filter((todo) =>
+      completedTodos.includes(todo._id["$oid"])
+    );
+    setTodosList(completed);
+  };
+
+
   //////DELETE
   const deleteTodoItem = async (todoId) => {
     try {
@@ -179,7 +183,12 @@ useEffect(() => {
   return (
     <div className={isDarkMode ? "dark-mode main" : "light-mode main"}>
       <div className="main-container">
-        <Navbar modeToggel={toggelMode} />
+        <Navbar
+          modeToggel={toggelMode}
+          toggleLang={toggelLang}
+          en={En}
+          mode={isDarkMode}
+        />
         <div
           style={{
             backgroundImage: `url(${backgroundImage})`,
@@ -246,21 +255,23 @@ useEffect(() => {
               </ul>
             </div>
             <div className="todo-footer-links">
-              <span>{activeTodos.length} items left</span>
+              <span>
+                {activeTodos.length} {En ? "items left" : " المهام الباقية"}
+              </span>
               <div className="links">
                 <Link onClick={AllListHandler} className="a">
-                  All
+                  {En ? "All" : " الكل"}
                 </Link>
                 <Link onClick={activeListHandler} className="a">
-                  Active
+                  {En ? "Active" : "جاري العمل "}
                 </Link>
                 <Link onClick={compListHandler} className="a">
-                  Completed
+                  {En ? "Completed" : "تم"}
                 </Link>
               </div>
               {completedTodos.length > 0 && (
                 <div className="clear-com" onClick={deleteCompletedTodos}>
-                  Clear Completed
+                  {En ? "Clear Completed" : "مسح المنتهي"}
                 </div>
               )}
             </div>
