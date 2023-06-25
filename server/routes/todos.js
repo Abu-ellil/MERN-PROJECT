@@ -44,29 +44,99 @@ router.put('/',async(req,res)=>{
           .send({ message: "Empty Completed list" });
     }
 })
+router.put("/done/:userId/:todoId", async (req, res) => {
+  try {
+    const { userId, todoId } = req.params;
+    const user = await UserModel.findById(userId);
 
-router.get('/completed/ids/:userId',async(req,res)=>{
+    if (!user || !user.done.includes(todoId)) {
+      return res.status(404).json({ message: "Todo not found" });
+    }
+    user.done = user.done.filter((id) => id !== todoId);
+    await user.save();
+
+    res.status(200).json({ message: "Todo marked as not done" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get('/done',async(req,res)=>{
     try {
-        const user = await userRouter.findById(req.params.userId)
-        console.log(req.body.userId);
-        res.json({done:user?.done})
+        const todo = await TodosModel.findById(req.body.todoId)
+        const user = await UserModel.findById(req.body.userId);
+        console.log(req.body);
+    
+        res.json({done: user.done})
     } catch (error) {
-        return res.status(409).send({ message: "Empty Something list" });
+        return res
+          .status(409)
+          .send({ message: "Empty Completed list" });
     }
 })
 
 
-router.get('/completed',async(req,res)=>{
-    try {
-        const user = await userRouter.findById(req.body.userId)
-        const done =await TodosModel.find({
-            _id: {$in: user.done}
-        })
-        res.json({done})
-    } catch (error) {
-        return res.status(409).send({ message: "Empty Something list" });
-    }
-})
+// Get id of saved Todos
+router.get("/done/ids/:userId", async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.params.userId);
+    res.status(201).json({ done: user?.done });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+// Get saved Todos
+router.get("/done/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await UserModel.findById(userId);
+    const done = await TodosModel.find({
+      _id: { $in: user.done },
+    });
+
+    console.log(done);
+    res.status(201).json({ done });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.delete("/done/:userId/:todoId", async (req, res) => {
+  try {
+    const { userId, todoId } = req.params;
+    console.log(userId,todoId);
+    const user = await UserModel.findById(userId);
+
+    // if (!user || !user.done.includes(todoId)) {
+    //   return res.status(404).json({ message: "Todo not found" });
+    // }
+    user.done = user.done.filter((id) => id !== todoId);
+    await user.save();
+
+    res.status(200).json({ message: "Todo marked as not done" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+router.delete("/:id", async (req, res) => {
+  const todoId = req.params.id;
+
+  try {
+    await TodosModel.findByIdAndDelete(todoId);
+
+    res.status(200).json({ message: "Todo deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error deleting todo" });
+  }
+});
+
 
 
 export {router as todosRouter}

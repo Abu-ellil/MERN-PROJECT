@@ -1,40 +1,38 @@
 import express from "express";
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { UserModel } from "../models/user.js";
 
-const router = express.Router()
+const router = express.Router();
 
-router.post('/register',async(req,res)=>{
+router.post("/register", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await UserModel.findOne({ email });
+    if (user) {
+      return res
+        .status(409)
+        .send({ message: "User with this email already exists!" });
+    }
+    const cryptPass = await bcrypt.hash(password, 10);
+    const newUser = new UserModel({
+      email,
+      password: cryptPass,
+      isRegistrationComplete: false,
+    });
+    await newUser.save();
 
-try {
-        const { email, password } = req.body;
-        const user = await UserModel.findOne({ email });
-        if (user) {
-          return res
-            .status(409)
-            .send({ message: "User with this email already exists!" });
-        }
-        const cryptPass = await bcrypt.hash(password, 10);
-        const newUser = new UserModel({
-          email,
-          password: cryptPass,
-          isRegistrationComplete: false,
-        });
-        await newUser.save();
+    const userId = newUser._id;
 
-        const userId = newUser._id;
-
-        res.status(201).send({
-          userId: userId,
-          message:
-            "User registered successfully. Please provide additional information.",
-        });
-} catch (error) {
+    res.status(201).send({
+      userId: userId,
+      message:
+        "User registered successfully. Please provide additional information.",
+    });
+  } catch (error) {
     res.status(500).send({ message: "Internal Server Error" });
-}
-
-})
+  }
+});
 
 //SECOND STEP
 
@@ -61,27 +59,22 @@ router.post("/register/:userId", async (req, res) => {
   }
 });
 
-router.post('/login',async(req,res)=>{
-    try {
-        const { email, password } = req.body;
-        const user = await UserModel.findOne({ email });
-        if (!user) {
-          return res
-            .status(409)
-            .send({ message: "User Doesn't Exist!" });
-        }
-        const isPassValid = await bcrypt.compare(password, user.password)
-        if(!isPassValid){
-             return res.status(409).send({ message: "Username Or Password Is Incorrect!" });
-        }
-        const token = jwt.sign({id:user._id}, 'secret')
-        res.json({token,userId:user._id})
-
-    } catch (error) {
-        
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      return res.status(409).send({ message: "User Doesn't Exist!" });
     }
+    const isPassValid = await bcrypt.compare(password, user.password);
+    if (!isPassValid) {
+      return res
+        .status(409)
+        .send({ message: "Username Or Password Is Incorrect!" });
+    }
+    const token = jwt.sign({ id: user._id }, "secret");
+    res.json({ token, userId: user._id });
+  } catch (error) {}
+});
 
-    
-})
-
-export{router as userRouter}
+export { router as userRouter };

@@ -17,11 +17,15 @@ const Landing = () => {
   const userId = window.localStorage.getItem("userId");
   const [cookies, setCookies] = useCookies(["access_token"]);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [doneTodos, setDoneTodos] =useState()
   const [lang, setLang] = useState(true);
+
+
+
   const [todosList, setTodosList] = useState([]);
   const [allTodosList, setAllTodo] = useState([]);
   const [completedTodo, setCompletedTodo] = useState([]);
-  const [activeTodo, setActiveTodo] = useState([]);
+  const [activeTodos, setActiveTodos] = useState([]);
   const navigate = useNavigate();
   const [todo, setTodo] = useState({
     text: "",
@@ -30,6 +34,7 @@ const Landing = () => {
   });
 
   useEffect(() => {
+
     const getTodoList = async () => {
       try {
         const response = await axios.get(
@@ -40,29 +45,29 @@ const Landing = () => {
         console.error(error);
       }
     };
-    
-    const getCompletefTodoList = async () => {
+
+ 
+    const getCompletedTodoList = async () => {
       try {
+        
         const response = await axios.get(
-          `http://localhost:8080/todos?userId=${userId}`
+          `http://localhost:8080/todos/done/ids/${userId}`
         );
-        const filteredItems = response.data.filter(
-          (item) => item.state === true
-        );
-        const activeItems = response.data.filter(
-          (item) => item.state === false
-        );
-        setAllTodo(response.data);
-        setActiveTodo(activeItems)
-        setCompletedTodo(filteredItems);
-      } catch (error) {
-        console.error(error);
+        setDoneTodos(response.data.done);
+        
+
+      } catch (err) {
+        console.log(err);
       }
     };
-    getCompletefTodoList();
+        
+   
+    getCompletedTodoList();
     getTodoList();
-  }, []);
 
+  }, [todo]);
+
+///////////////
   const changeHandler = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
@@ -85,16 +90,7 @@ const Landing = () => {
     }
   };
 
-  const addToCompletedTodo = async (todoId) => {
-    try {
-      const response = await axios.put("http://localhost:8080/todos", {
-        todoId,
-        userId,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
 
   const toggelMode = (e) => {
     e.preventDefault();
@@ -107,23 +103,71 @@ const Landing = () => {
     setLang(!lang);
   };
 
-  const updateTodoState = (e) => {
-    setTodo({ ...todo, state: e.target.checked });
+const removeFromDone = async (todoId) => {
+  try {
+    await axios.delete(`http://localhost:8080/todos/done/${userId}/${todoId}`);
+    setDoneTodos((prevDoneTodos) =>
+      prevDoneTodos.filter((id) => id !== todoId)
+    );
+    console.log("Todo marked as not done");
+  } catch (error) {
+    console.log(error);
+  }
+};
+  const updateTodoState = async (e, todoId) => {
+    const isChecked = e.target.checked;
+    setTodo({ ...todo, state: isChecked });
+
+    if (isChecked) {
+      await addToDone(todoId);
+    } else {
+      await removeFromDone(todoId);
+    }
   };
+
   const AllListHandler = () => {
     setTodosList(allTodosList);
   };
   const activeListHandler = () => {
-    setTodosList(activeTodo);
+    setTodosList(activeTodos);
   };
   const compListHandler = () => {
-    setTodosList(completedTodo);
+    setTodosList(doneTodos);
   };
+
+  const addToDone = async (todoId) => {
+    try {
+      await axios.put("http://localhost:8080/todos", {
+        todoId,
+        userId,
+      });
+      //////ADD TO COMP
+      setCompletedTodo((prevCompletedTodo) => [...prevCompletedTodo, todoId]);
+      console.log("Todo marked as done");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+const isDone = (id)=> doneTodos.includes(id)
+//////DELETE
+const deleteTodoItem = async (todoId) => {
+  try {
+    await axios.delete(`http://localhost:8080/todos/${todoId}`);
+    setTodosList((prevTodosList) =>
+      prevTodosList.filter((todo) => todo._id !== todoId)
+    );
+    console.log("Todo deleted successfully");
+  } catch (error) {
+    console.log(error);
+  }
+};
 
   return (
     <div className={isDarkMode ? "dark-mode main" : "light-mode main"}>
       <div className="main-container">
-        <Navbar modeToggel={toggelMode}/>
+        <Navbar modeToggel={toggelMode} />
         <div
           style={{
             backgroundImage: `url(${backgroundImage})`,
@@ -166,20 +210,31 @@ const Landing = () => {
                       <label className="checkbox-container">
                         <input
                           type="checkbox"
-                          checked={todo.state}
-                          onChange={changeHandler}
-                          onClick={() => addToCompletedTodo(todo._id)}
+                          checked={isDone(todo._id)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              addToDone(todo._id);
+                            } else {
+                              removeFromDone(todo._id);
+                            }
+                          }}
                         />
                         <span className="checkmark"></span>
                       </label>
                       <li className="item">{todo.text}</li>
+                      <button
+                        className="delete-button"
+                        onClick={() => deleteTodoItem(todo._id)}
+                      >
+                        X
+                      </button>
                     </div>
                   );
                 })}
               </ul>
             </div>
             <div className="todo-footer-links">
-              <span>5 items left</span>
+              <span>{activeTodos.length} items left</span>
               <div className="links">
                 <Link onClick={AllListHandler} className="a ">
                   All
