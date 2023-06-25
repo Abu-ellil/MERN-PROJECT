@@ -6,14 +6,18 @@ import { userRouter } from './users.js'
 
 const router =express.Router()
 
-router.get('/',async(req,res)=>{
-    try {
-        const response = await TodosModel.find({})
-        res.json(response)
-    } catch (error) {
-        res.json(error)
-    }
-})
+
+
+router.get("/", async (req, res) => {
+  const userId = req.query.userId;
+  try {
+    const response = await TodosModel.find({ userOwner: userId }); 
+    res.json(response);
+  } catch (error) {
+    res.json(error);
+  }
+});
+
 router.post('/',async(req,res)=>{
     const todo = new TodosModel(req.body)
     try {
@@ -28,7 +32,8 @@ router.post('/',async(req,res)=>{
 router.put('/',async(req,res)=>{
     try {
         const todo = await TodosModel.findById(req.body.todoId)
-        const user = await UserModel.findById(req.body.todoId);
+        const user = await UserModel.findById(req.body.userId);
+        
         user.done.push(todo)
         await user.save()
 
@@ -40,9 +45,10 @@ router.put('/',async(req,res)=>{
     }
 })
 
-router.get('/completed/ids',async(req,res)=>{
+router.get('/completed/ids/:userId',async(req,res)=>{
     try {
-        const user = await userRouter.findById(req.body.userId)
+        const user = await userRouter.findById(req.params.userId)
+        console.log(req.body.userId);
         res.json({done:user?.done})
     } catch (error) {
         return res.status(409).send({ message: "Empty Something list" });

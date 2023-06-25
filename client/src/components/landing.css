@@ -1,8 +1,19 @@
-.main-container {
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;700&display=swap');
+
+.main{
+  width: 100%;
+  font-family:Josefin Sans,'Almarai';
+}
+.main-container { 
+  width: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
 }
 .todos-main {
+  position: fixed;
+  top: 4%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -12,8 +23,21 @@
 .add-todo {
   display: flex;
   align-items: center;
+  background-color: #fff;
+  border-radius: 5px;
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: .5rem;
 }
+.add-todo input{
+  font-size: 1.6rem;
+  padding:.5rem;
+  width: 100%;
+  border: none;
+}
+
 .todo-list {
+  width: 100%;
 }
 .todo-ul {
   color: #494c6b;
@@ -29,10 +53,21 @@
   background-color: #fff;
   border: 1px solid #33333330;
   padding: 0.5rem 1rem;
-  margin: 1rem;
+  margin-bottom: .1rem;
   border-radius: 5px;
   border: none;
+  box-shadow:0px 1px 2px #494c6b31;
 }
+.item{
+  font-family: Josefin Sans,'Almarai';
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  padding: 0.5rem 1rem;
+  margin-bottom: .1rem;
+  border-radius: 5px;
+}
+
 /* /////////////////// */
 /* /////////////////// */
 .checkbox-container {
@@ -82,6 +117,35 @@
   border-width: 0 3px 3px 0;
   transform: rotate(45deg);
 }
+/* ////////////////// */
+.todo-footer-links{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+   font-family: Josefin Sans,'Almarai';
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  padding:  1.5rem;
+  margin-bottom: .1rem;
+  border-radius: 5px;
+  color: var(--secondary-color);
+}
+.todo-footer-links .links{
+  font-weight: 600;
+  display: flex;
+  gap: 1rem;
+}
+.links .a{
+  color: var(--secondary-color);
+  text-decoration: none;
+}
+.links .a.active{
+  color: var(--primary-color);
+  
+}
+
+
 
 @media (max-width: 600px) {
   .todos-main {

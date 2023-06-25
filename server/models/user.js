@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
     username:{type:String},
     phone:{type:Number},
     birthYear:{type:Number},
-    done:[{type:mongoose.Schema.Types.ObjectId, ref:'todos'}]
+    done:[{type:mongoose.Schema.Types.ObjectId, ref:'todos',unique:true}]
 })
 
 

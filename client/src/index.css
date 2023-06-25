@@ -1,5 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Almarai:wght@400;700&family=Rubik:wght@300;500;700&display=swap');
 
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
 :root{
   --primary-color:#D375B9;
   --dark-color:#241229;
@@ -9,26 +14,20 @@
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family:-apple-system, BlinkMacSystemFont,  'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  background-color: #ebe8e8b6;
 }
 
 .light-mode {
-  height: 100vh;
   background-color: #ebe7e7;
   color: #333;
 }
 
 .dark-mode {
-  height: 100vh;
   background-color: var(--dark-color);
   color: #f5f5f5;
 }
