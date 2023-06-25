@@ -40,6 +40,7 @@ const Landing = () => {
         console.error(error);
       }
     };
+    
     const getCompletefTodoList = async () => {
       try {
         const response = await axios.get(
@@ -98,6 +99,7 @@ const Landing = () => {
   const toggelMode = (e) => {
     e.preventDefault();
     setIsDarkMode(!isDarkMode);
+    console.log('toggel');
   };
 
   const toggelLang = (e) => {
@@ -121,7 +123,7 @@ const Landing = () => {
   return (
     <div className={isDarkMode ? "dark-mode main" : "light-mode main"}>
       <div className="main-container">
-        <Navbar />
+        <Navbar modeToggel={toggelMode}/>
         <div
           style={{
             backgroundImage: `url(${backgroundImage})`,
