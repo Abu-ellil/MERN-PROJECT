@@ -17,14 +17,11 @@ const Landing = () => {
   const userId = window.localStorage.getItem("userId");
   const [cookies, setCookies] = useCookies(["access_token"]);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [doneTodos, setDoneTodos] =useState()
+  const [doneTodos, setDoneTodos] = useState();
   const [lang, setLang] = useState(true);
-
-
-
+  const [completedTodos, setCompletedTodos] = useState([]);
   const [todosList, setTodosList] = useState([]);
-  const [allTodosList, setAllTodo] = useState([]);
-  const [completedTodo, setCompletedTodo] = useState([]);
+  const [allTodosList, setAllTodo] = useState([]);;
   const [activeTodos, setActiveTodos] = useState([]);
   const navigate = useNavigate();
   const [todo, setTodo] = useState({
@@ -34,7 +31,6 @@ const Landing = () => {
   });
 
   useEffect(() => {
-
     const getTodoList = async () => {
       try {
         const response = await axios.get(
@@ -45,29 +41,27 @@ const Landing = () => {
         console.error(error);
       }
     };
-
- 
     const getCompletedTodoList = async () => {
       try {
-        
         const response = await axios.get(
           `http://localhost:8080/todos/done/ids/${userId}`
         );
         setDoneTodos(response.data.done);
-        
-
+        setCompletedTodos(response.data.done);
       } catch (err) {
         console.log(err);
       }
     };
-        
-   
+
     getCompletedTodoList();
     getTodoList();
-
-  }, [todo]);
-
-///////////////
+  }, [userId, doneTodos]);
+useEffect(() => {
+  setActiveTodos(
+    todosList.filter((todo) => !completedTodos.includes(todo._id))
+  );
+}, [todosList, completedTodos]);
+  ///////////////
   const changeHandler = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
@@ -90,12 +84,10 @@ const Landing = () => {
     }
   };
 
-
-
   const toggelMode = (e) => {
     e.preventDefault();
     setIsDarkMode(!isDarkMode);
-    console.log('toggel');
+    console.log("toggel");
   };
 
   const toggelLang = (e) => {
@@ -103,17 +95,19 @@ const Landing = () => {
     setLang(!lang);
   };
 
-const removeFromDone = async (todoId) => {
-  try {
-    await axios.delete(`http://localhost:8080/todos/done/${userId}/${todoId}`);
-    setDoneTodos((prevDoneTodos) =>
-      prevDoneTodos.filter((id) => id !== todoId)
-    );
-    console.log("Todo marked as not done");
-  } catch (error) {
-    console.log(error);
-  }
-};
+  const removeFromDone = async (todoId) => {
+    try {
+      await axios.delete(
+        `http://localhost:8080/todos/done/${userId}/${todoId}`
+      );
+      setDoneTodos((prevDoneTodos) =>
+        prevDoneTodos.filter((id) => id !== todoId)
+      );
+      console.log("Todo marked as not done");
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const updateTodoState = async (e, todoId) => {
     const isChecked = e.target.checked;
     setTodo({ ...todo, state: isChecked });
@@ -126,43 +120,61 @@ const removeFromDone = async (todoId) => {
   };
 
   const AllListHandler = () => {
-    setTodosList(allTodosList);
-  };
-  const activeListHandler = () => {
-    setTodosList(activeTodos);
-  };
-  const compListHandler = () => {
-    setTodosList(doneTodos);
+    setTodosList(todosList);
+    console.log('11111111111');
   };
 
-  const addToDone = async (todoId) => {
+  const activeListHandler = () => {
+    const active = todosList.filter(
+      (todo) => !completedTodos.includes(todo._id)
+    );
+    setTodosList(active);
+  };
+
+  const compListHandler = () => {
+    setTodosList(todosList.filter((todo) => completedTodos.includes(todo._id)));
+  };
+
+  const deleteCompletedTodos = async () => {
     try {
-      await axios.put("http://localhost:8080/todos", {
-        todoId,
-        userId,
-      });
-      //////ADD TO COMP
-      setCompletedTodo((prevCompletedTodo) => [...prevCompletedTodo, todoId]);
-      console.log("Todo marked as done");
+      await axios.delete(`http://localhost:8080/todos/done/${userId}`);
+      setCompletedTodos([]);
+      console.log("Completed todos cleared");
     } catch (error) {
       console.log(error);
     }
   };
 
 
-const isDone = (id)=> doneTodos.includes(id)
-//////DELETE
-const deleteTodoItem = async (todoId) => {
-  try {
-    await axios.delete(`http://localhost:8080/todos/${todoId}`);
-    setTodosList((prevTodosList) =>
-      prevTodosList.filter((todo) => todo._id !== todoId)
-    );
-    console.log("Todo deleted successfully");
-  } catch (error) {
-    console.log(error);
-  }
-};
+  
+  //////ADD TO COMP
+  const addToDone = async (todoId) => {
+    try {
+      await axios.put("http://localhost:8080/todos", {
+        todoId,
+        userId,
+      });
+      setCompletedTodos((prevCompletedTodo) => [...prevCompletedTodo, todoId]);
+      console.log("Todo marked as done");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const isDone = (id) => doneTodos.includes(id);
+
+  //////DELETE
+  const deleteTodoItem = async (todoId) => {
+    try {
+      await axios.delete(`http://localhost:8080/todos/${todoId}`);
+      setTodosList((prevTodosList) =>
+        prevTodosList.filter((todo) => todo._id !== todoId)
+      );
+      console.log("Todo deleted successfully");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className={isDarkMode ? "dark-mode main" : "light-mode main"}>
@@ -236,17 +248,21 @@ const deleteTodoItem = async (todoId) => {
             <div className="todo-footer-links">
               <span>{activeTodos.length} items left</span>
               <div className="links">
-                <Link onClick={AllListHandler} className="a ">
+                <Link onClick={AllListHandler} className="a">
                   All
                 </Link>
-                <Link onClick={activeListHandler} className="a active">
+                <Link onClick={activeListHandler} className="a">
                   Active
                 </Link>
-                <Link className="a" onClick={compListHandler}>
+                <Link onClick={compListHandler} className="a">
                   Completed
                 </Link>
               </div>
-              <div className="clear-com">clear Com</div>
+              {completedTodos.length > 0 && (
+                <div className="clear-com" onClick={deleteCompletedTodos}>
+                  Clear Completed
+                </div>
+              )}
             </div>
           </div>
         )}

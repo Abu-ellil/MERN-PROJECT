@@ -106,19 +106,29 @@ router.get("/done/:userId", async (req, res) => {
   }
 });
 
-router.delete("/done/:userId/:todoId", async (req, res) => {
+router.delete("/done/:userId/:objectId", async (req, res) => {
   try {
-    const { userId, todoId } = req.params;
-    console.log(userId,todoId);
+    const { userId, objectId } = req.params;
     const user = await UserModel.findById(userId);
 
-    // if (!user || !user.done.includes(todoId)) {
-    //   return res.status(404).json({ message: "Todo not found" });
-    // }
-    user.done = user.done.filter((id) => id !== todoId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const objectIndex = user.done.findIndex(
+      (obj) => obj.toString() === objectId
+    );
+
+    if (objectIndex === -1) {
+      return res
+        .status(404)
+        .json({ message: "Object not found in done array" });
+    }
+
+    user.done.splice(objectIndex, 1);
     await user.save();
 
-    res.status(200).json({ message: "Todo marked as not done" });
+    res.status(200).json({ message: "Object removed from done array" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server error" });
@@ -136,6 +146,36 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ message: "Error deleting todo" });
   }
 });
+
+router.delete("/done/:userId", async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+   
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.done = [];
+
+  
+    await user.save();
+
+    res.status(200).json({ message: "All done content deleted" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+
+
+
+
+
 
 
 
