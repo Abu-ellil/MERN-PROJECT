@@ -1,48 +1,41 @@
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState, useEffect } from "react";
-import logo from '../../assets/main-logo.svg'
-import { Link, useNavigate } from "react-router-dom";
-import {useCookies} from 'react-cookie'
+import logo from "../../assets/main-logo.svg";
+import { useNavigate } from "react-router-dom";
+
+import { Link} from "react-router-dom";
+import { useCookies } from "react-cookie";
 import axios from "axios";
-import  "./login.css";
-
-
-
-
-
-
+import "./login.css";
 
 const Login = () => {
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [data, setData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
-  const [_,setCookies] = useCookies(['access_token'])
+  const [_, setCookies] = useCookies(["access_token"]);
   const [error, setError] = useState("");
-  const navigate = useNavigate()
-
-
+ const navigate = useNavigate();
 
 
   const handleChange = ({ currentTarget: input }) => {
     setData({ ...data, [input.name]: input.value });
   };
- const handleTogglePassword = (e) => {
-  e.preventDefault()
-   setShowPassword(!showPassword);
- };
+  const handleTogglePassword = (e) => {
+    e.preventDefault();
+    setShowPassword(!showPassword);
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8080/auth/login",data);
-      setCookies('access_token',response.data.token)
+      const response = await axios.post(
+        "http://localhost:8080/auth/login",
+        data
+      );
+      navigate("/");
+      setCookies("access_token", response.data.token);
       localStorage.setItem("userId", response.data.userId);
-      navigate("/")
-
-
-
-      // const url = "http://localhost:8080/auth/login";
-      // const { data: res } = await axios.post(url, data);
-      // localStorage.setItem("token", res.data);
+      localStorage.setItem("userName", response.data.user.username);
+      
     } catch (error) {
       if (
         error.response &&
@@ -50,7 +43,7 @@ const Login = () => {
         error.response.status <= 500
       ) {
         setError(error.response.data.message);
-      }
+      } 
     }
   };
 

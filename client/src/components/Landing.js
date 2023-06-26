@@ -1,12 +1,11 @@
 import backgroundImage from "../assets/main-cover.png";
-
 import React, { useState, useEffect } from "react";
 import night from "../assets/Combined Shape.svg";
 import { useCookies } from "react-cookie";
 import { Navbar } from "./nav/Navbar";
 import axios from "axios";
 import {
-  BrowserRouter,
+  BrowserRouter as Router,
   Routes,
   Route,
   Link,
@@ -32,12 +31,12 @@ const Landing = () => {
     state: false,
     userOwner: userId,
   });
-  const [todosList, setTodosList] = useState(allTodosList);
+  const [todosList, setTodosList] = useState([]);
 
   const toggelMode = (e) => {
     e.preventDefault();
     setIsDarkMode(!isDarkMode);
-    console.log("toggel");
+    console.log("toggle");
   };
 
   const toggelLang = (e) => {
@@ -46,7 +45,7 @@ const Landing = () => {
   };
 
   useEffect(() => {
-    const getTodoList = async () => {
+    const fetchData = async () => {
       try {
         const response = await axios.get(
           `http://localhost:8080/todos?userId=${userId}`
@@ -57,42 +56,48 @@ const Landing = () => {
       }
     };
 
-    const doneListFetch = async () => {
+    fetchData();
+  }, [userId]);
+
+  useEffect(() => {
+    const fetchCompletedTodos = async () => {
       try {
         const response = await axios.get(
           `http://localhost:8080/todos/done/${userId}`
         );
         const doneTodos = response.data.done.filter((todo) => todo !== null);
 
-         const notDoneTodos = todosList.filter(
-           (todo) =>
-             !doneTodos.some((completedTodo) => completedTodo._id === todo._id)
-         );
+        const notDoneTodos = todosList.filter(
+          (todo) =>
+            !doneTodos.some((completedTodo) => completedTodo._id === todo._id)
+        );
 
-         setCompletedTodos(doneTodos);
-         setActiveTodos(notDoneTodos);
-      } catch (err) {
-        console.error(err);
+        setCompletedTodos(doneTodos);
+        setActiveTodos(notDoneTodos);
+      } catch (error) {
+        console.error(error);
       }
     };
-    const getCompletedTodoList = async () => {
+
+    fetchCompletedTodos();
+  }, [todosList, userId]);
+
+  useEffect(() => {
+    const fetchDoneTodos = async () => {
       try {
         const response = await axios.get(
           `http://localhost:8080/todos/done/ids/${userId}`
         );
         const doneTodos = response.data.done.filter((todo) => todo !== null);
         setDoneTodos(doneTodos);
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        console.error(error);
       }
     };
 
-    doneListFetch();
-    getCompletedTodoList();
-    getTodoList();
-  }, [doneTodos]);
+    fetchDoneTodos();
+  }, [userId]);
 
-  ///////////////
   const changeHandler = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
@@ -128,6 +133,7 @@ const Landing = () => {
       console.log(error);
     }
   };
+
   const updateTodoState = async (e, todoId) => {
     const isChecked = e.target.checked;
     setTodo({ ...todo, state: isChecked });
@@ -149,7 +155,6 @@ const Landing = () => {
     }
   };
 
-  //////ADD TO COMP
   const addToDone = async (todoId) => {
     try {
       const response = await axios.put("http://localhost:8080/todos", {
@@ -171,7 +176,6 @@ const Landing = () => {
 
   const isDone = (id) => doneTodos.includes(id);
 
-  //////DELETE
   const deleteTodoItem = async (todoId) => {
     try {
       await axios.delete(`http://localhost:8080/todos/${todoId}`);
@@ -194,7 +198,7 @@ const Landing = () => {
             backgroundSize: "cover",
             backgroundPosition: "center",
             width: "100%",
-            height: "20vh",
+            height: "25vh",
           }}
         ></div>
         {!cookies.access_token ? (
@@ -222,6 +226,9 @@ const Landing = () => {
                 />
               </form>
             </div>
+            {/* ************************* */}
+            {/* <AllTodos/> */}
+            {/* ************************* */}
             <div className="todo-footer-links">
               <span>
                 {activeTodos.length} {En ? "items left" : " المهام الباقية"}
@@ -236,7 +243,7 @@ const Landing = () => {
                 <Link to="/completed" className="a">
                   {En ? "Completed" : "تم"}
                 </Link>
-              </div>{" "}
+              </div>
               {completedTodos.length > 0 && (
                 <>
                   <div className="clear-com" onClick={deleteCompletedTodos}>

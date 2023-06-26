@@ -13,7 +13,7 @@
 }
 .todos-main {
     position: fixed;
-    top: 4%;
+    top: 10%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -25,7 +25,7 @@
 .todos-pages{
   position: fixed;
   width: 40%;
-  top: 23%;
+  top: 30%;
 }
 .add-todo {
   display: flex;
