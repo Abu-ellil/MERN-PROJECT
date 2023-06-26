@@ -140,24 +140,6 @@ const Landing = () => {
 
   const isDone = (id) => doneTodos.includes(id);
 
-  const AllListHandler = () => {
-    setTodosList(allTodosList);
-  };
-
-  const activeListHandler = () => {
-    const active = allTodosList.filter(
-      (todo) => !completedTodos.includes(todo._id["$oid"])
-    );
-    setTodosList(active);
-  };
-
-  const compListHandler = () => {
-    const completed = allTodosList.filter((todo) =>
-      completedTodos.includes(todo._id["$oid"])
-    );
-    setTodosList(completed);
-  };
-
   //////DELETE
   const deleteTodoItem = async (todoId) => {
     try {
@@ -174,12 +156,11 @@ const Landing = () => {
   useEffect(() => {
     getCompletedTodoList();
     getTodoList();
-  }, [todosList]);
-  useEffect(() => {
-    setActiveTodos(
-      
-    );
+
+    setActiveTodos(todosList.filter((todo) => !completedTodos.includes(todo._id["$oid"])))
+    
   }, [todosList, completedTodos]);
+ 
   return (
     <div className={isDarkMode ? "dark-mode main" : "light-mode main"}>
       <div className="main-container">
@@ -252,7 +233,7 @@ const Landing = () => {
             </div>
             <div className="todo-footer-links">
               <span>
-                {activeTodos.length} {activeTodos.length}{" "}
+                {activeTodos.length}{" "}
                 {En ? "items left" : " المهام الباقية"}
               </span>
               <div className="links">
