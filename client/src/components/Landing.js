@@ -49,8 +49,9 @@ const Landing = () => {
       const response = await axios.get(
         `http://localhost:8080/todos/done/ids/${userId}`
       );
-      setDoneTodos(response.data.done);
-      setCompletedTodos(response.data.done);
+      const doneTodos = response.data.done.filter((todo) => todo !== null);
+      setDoneTodos(doneTodos);
+      setCompletedTodos(doneTodos);
     } catch (err) {
       console.log(err);
     }
@@ -157,10 +158,11 @@ const Landing = () => {
     getCompletedTodoList();
     getTodoList();
 
-    setActiveTodos(todosList.filter((todo) => !completedTodos.includes(todo._id["$oid"])))
-    
+    setActiveTodos(
+      todosList.filter((todo) => !completedTodos.includes(todo._id["$oid"]))
+    );
   }, [todosList, completedTodos]);
- 
+
   return (
     <div className={isDarkMode ? "dark-mode main" : "light-mode main"}>
       <div className="main-container">
@@ -199,99 +201,70 @@ const Landing = () => {
                 />
               </form>
             </div>
-            <div className="todo-list">
-              <ul className="todo-ul">
-                {/* {todosList.map((todo) => {
-                    return (
-                      <div className="list-item" key={todo._id}>
-                        <label className="checkbox-container">
-                          <input
-                            type="checkbox"
-                            checked={isDone(todo._id)}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                addToDone(todo._id);
-                              } else {
-                                removeFromDone(todo._id);
-                              }
-                            }}
-                          />
-                          <span className="checkmark"></span>
-                        </label>
-                        <li className="item">{todo.text}</li>
-                        <button
-                          className="delete-button"
-                          onClick={() => deleteTodoItem(todo._id)}
-                        >
-                          X
-                        </button>
-                      </div>
-                    );
-                  })
-                } */}
-              </ul>
-            </div>
             <div className="todo-footer-links">
               <span>
-                {activeTodos.length}{" "}
-                {En ? "items left" : " المهام الباقية"}
+                {activeTodos.length} {En ? "items left" : " المهام الباقية"}
               </span>
               <div className="links">
                 <Link to="/all" className="a">
-                  {" "}
                   {En ? "All" : " الكل"}
                 </Link>
                 <Link to="/active" className="a">
-                  {" "}
                   {En ? "Active" : "جاري العمل "}
                 </Link>
                 <Link to="/completed" className="a">
-                  {" "}
                   {En ? "Completed" : "تم"}
                 </Link>
-              </div>
+              </div>{" "}
+              {completedTodos.length > 0 && (
+                <>
+                  <div className="clear-com" onClick={deleteCompletedTodos}>
+                    {En ? "Clear Completed" : "مسح المنتهي"}
+                  </div>
+                </>
+              )}
             </div>
+
+            <Routes>
+              <Route
+                path="/all"
+                element={
+                  <AllTodos
+                    todos={todosList}
+                    isDone={isDone}
+                    addToDone={addToDone}
+                    removeFromDone={removeFromDone}
+                    deleteTodoItem={deleteTodoItem}
+                  />
+                }
+              />
+              <Route
+                path="/active"
+                element={
+                  <ActiveTodos
+                    todos={activeTodos}
+                    isDone={isDone}
+                    addToDone={addToDone}
+                    removeFromDone={removeFromDone}
+                    deleteTodoItem={deleteTodoItem}
+                  />
+                }
+              />
+              <Route
+                path="/completed"
+                element={
+                  <CompletedTodos
+                    todos={doneTodos}
+                    isDone={isDone}
+                    addToDone={addToDone}
+                    removeFromDone={removeFromDone}
+                    deleteTodoItem={deleteTodoItem}
+                  />
+                }
+              />
+            </Routes>
           </div>
         )}
-
-        <Routes>
-          <Route
-            path="/all"
-            element={
-              <AllTodos
-                todos={todosList}
-                isDone={isDone}
-                addToDone={addToDone}
-                removeFromDone={removeFromDone}
-                deleteTodoItem={deleteTodoItem}
-              />
-            }
-          />
-          <Route
-            path="/active"
-            element={
-              <ActiveTodos
-                todos={activeTodos}
-                isDone={isDone}
-                addToDone={addToDone}
-                removeFromDone={removeFromDone}
-                deleteTodoItem={deleteTodoItem}
-              />
-            }
-          />
-          <Route
-            path="/completed"
-            element={
-              <CompletedTodos
-                todos={completedTodos}
-                isDone={isDone}
-                addToDone={addToDone}
-                removeFromDone={removeFromDone}
-                deleteTodoItem={deleteTodoItem}
-              />
-            }
-          />
-        </Routes>
       </div>
     </div>
   );
