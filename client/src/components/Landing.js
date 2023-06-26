@@ -21,7 +21,7 @@ const Landing = () => {
   const userId = window.localStorage.getItem("userId");
   const [cookies, setCookies] = useCookies(["access_token"]);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [doneTodos, setDoneTodos] = useState();
+  const [doneTodos, setDoneTodos] = useState([]);
   const [En, setAr] = useState(true);
   const [completedTodos, setCompletedTodos] = useState([]);
   const [allTodosList, setAllTodo] = useState([]);
@@ -34,54 +34,64 @@ const Landing = () => {
   });
   const [todosList, setTodosList] = useState(allTodosList);
 
+  const toggelMode = (e) => {
+    e.preventDefault();
+    setIsDarkMode(!isDarkMode);
+    console.log("toggel");
+  };
 
+  const toggelLang = (e) => {
+    e.preventDefault();
+    setAr(!En);
+  };
 
-
-    const toggelMode = (e) => {
-      e.preventDefault();
-      setIsDarkMode(!isDarkMode);
-      console.log("toggel");
+  useEffect(() => {
+    const getTodoList = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/todos?userId=${userId}`
+        );
+        setTodosList(response.data);
+      } catch (error) {
+        console.error(error);
+      }
     };
 
-    const toggelLang = (e) => {
-      e.preventDefault();
-      setAr(!En);
+    const doneListFetch = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/todos/done/${userId}`
+        );
+        const doneTodos = response.data.done.filter((todo) => todo !== null);
+
+         const notDoneTodos = todosList.filter(
+           (todo) =>
+             !doneTodos.some((completedTodo) => completedTodo._id === todo._id)
+         );
+
+         setCompletedTodos(doneTodos);
+         setActiveTodos(notDoneTodos);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    const getCompletedTodoList = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/todos/done/ids/${userId}`
+        );
+        const doneTodos = response.data.done.filter((todo) => todo !== null);
+        setDoneTodos(doneTodos);
+      } catch (err) {
+        console.error(err);
+      }
     };
 
+    doneListFetch();
+    getCompletedTodoList();
+    getTodoList();
+  }, [doneTodos]);
 
-
-useEffect(()=>{
-
-const getTodoList = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8080/todos?userId=${userId}`
-      );
-      setTodosList(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  const getCompletedTodoList = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8080/todos/done/ids/${userId}`
-      );
-      const doneTodos = response.data.done.filter((todo) => todo !== null);
-      setDoneTodos(doneTodos);
-      setCompletedTodos(doneTodos);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-     
-
- getCompletedTodoList();
- getTodoList();
-},[doneTodos])
-
-
-  
   ///////////////
   const changeHandler = (e) => {
     e.preventDefault();
@@ -104,8 +114,6 @@ const getTodoList = async () => {
       console.log(error);
     }
   };
-
-
 
   const removeFromDone = async (todoId) => {
     try {
@@ -150,8 +158,7 @@ const getTodoList = async () => {
       });
 
       const completedTodo = response.data.done;
-      
-      
+
       setCompletedTodos((prevCompletedTodo) => [
         ...prevCompletedTodo,
         completedTodo,
@@ -161,7 +168,6 @@ const getTodoList = async () => {
       console.log(error);
     }
   };
-
 
   const isDone = (id) => doneTodos.includes(id);
 
@@ -177,8 +183,6 @@ const getTodoList = async () => {
       console.log(error);
     }
   };
-
-
 
   return (
     <div className={isDarkMode ? "dark-mode main" : "light-mode main"}>
@@ -271,7 +275,7 @@ const getTodoList = async () => {
                 path="/completed"
                 element={
                   <CompletedTodos
-                    todos={doneTodos}
+                    todos={completedTodos}
                     isDone={isDone}
                     addToDone={addToDone}
                     removeFromDone={removeFromDone}

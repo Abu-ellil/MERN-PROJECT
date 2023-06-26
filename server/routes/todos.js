@@ -33,7 +33,7 @@ router.put('/',async(req,res)=>{
     try {
         const todo = await TodosModel.findById(req.body.todoId)
         const user = await UserModel.findById(req.body.userId);
-        todo.state = true
+        todo.state = "true"
         console.log(todo);
         user.done.push(todo)
         await user.save()
@@ -95,18 +95,19 @@ router.get("/done/ids/:userId", async (req, res) => {
 router.get("/done/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
-    const user = await UserModel.findById(userId);
-    const done = await TodosModel.find({
-      _id: { $in: user.done },
-    });
+    const user = await UserModel.findById(userId).populate("done");
 
-    console.log(done);
-    res.status(201).json({ done });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json({ done: user.done });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 router.delete("/done/:userId/:objectId", async (req, res) => {
   try {
@@ -136,6 +137,8 @@ router.delete("/done/:userId/:objectId", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+/////////DELETE
 router.delete("/:id", async (req, res) => {
   const todoId = req.params.id;
 
