@@ -45,6 +45,7 @@ router.put('/',async(req,res)=>{
           .send({ message: "Empty Completed list" });
     }
 })
+
 router.put("/done/:userId/:todoId", async (req, res) => {
   try {
     const { userId, todoId } = req.params;
@@ -63,7 +64,7 @@ router.put("/done/:userId/:todoId", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
+////get done list
 router.get('/done',async(req,res)=>{
     try {
         const todo = await TodosModel.findById(req.body.todoId)
@@ -108,7 +109,7 @@ router.get("/done/:userId", async (req, res) => {
   }
 });
 
-
+// remove frome done
 router.delete("/done/:userId/:objectId", async (req, res) => {
   try {
     const { userId, objectId } = req.params;
