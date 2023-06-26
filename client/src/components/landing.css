@@ -12,13 +12,20 @@
   align-items: center;
 }
 .todos-main {
+    position: fixed;
+    top: 4%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 4rem;
+    width: 40%;
+    height: 90vh;
+}
+.todos-pages{
   position: fixed;
-  top: 4%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 4rem;
   width: 40%;
+  top: 23%;
 }
 .add-todo {
   display: flex;

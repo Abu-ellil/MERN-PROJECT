@@ -33,7 +33,8 @@ router.put('/',async(req,res)=>{
     try {
         const todo = await TodosModel.findById(req.body.todoId)
         const user = await UserModel.findById(req.body.userId);
-        
+        todo.state = true
+        console.log(todo);
         user.done.push(todo)
         await user.save()
 

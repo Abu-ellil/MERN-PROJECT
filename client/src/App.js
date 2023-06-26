@@ -6,8 +6,9 @@ import Landing from "./components/Landing";
 function App() {
   return (
     <BrowserRouter>
+    <Landing />
       <Routes>
-        <Route path="/landing" element={<Landing />} />
+        {/* <Route path="/landing" element={} /> */}
         <Route path="/signup" element={<RegistrationPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<Landing />} />
