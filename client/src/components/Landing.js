@@ -34,7 +34,25 @@ const Landing = () => {
   });
   const [todosList, setTodosList] = useState(allTodosList);
 
-  const getTodoList = async () => {
+
+
+
+    const toggelMode = (e) => {
+      e.preventDefault();
+      setIsDarkMode(!isDarkMode);
+      console.log("toggel");
+    };
+
+    const toggelLang = (e) => {
+      e.preventDefault();
+      setAr(!En);
+    };
+
+
+
+useEffect(()=>{
+
+const getTodoList = async () => {
     try {
       const response = await axios.get(
         `http://localhost:8080/todos?userId=${userId}`
@@ -53,10 +71,17 @@ const Landing = () => {
       setDoneTodos(doneTodos);
       setCompletedTodos(doneTodos);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
+     
 
+ getCompletedTodoList();
+ getTodoList();
+},[doneTodos])
+
+
+  
   ///////////////
   const changeHandler = (e) => {
     e.preventDefault();
@@ -80,16 +105,7 @@ const Landing = () => {
     }
   };
 
-  const toggelMode = (e) => {
-    e.preventDefault();
-    setIsDarkMode(!isDarkMode);
-    console.log("toggel");
-  };
 
-  const toggelLang = (e) => {
-    e.preventDefault();
-    setAr(!En);
-  };
 
   const removeFromDone = async (todoId) => {
     try {
@@ -128,16 +144,24 @@ const Landing = () => {
   //////ADD TO COMP
   const addToDone = async (todoId) => {
     try {
-      await axios.put("http://localhost:8080/todos", {
+      const response = await axios.put("http://localhost:8080/todos", {
         todoId,
         userId,
       });
-      setCompletedTodos((prevCompletedTodo) => [...prevCompletedTodo, todoId]);
+
+      const completedTodo = response.data.done;
+      
+      
+      setCompletedTodos((prevCompletedTodo) => [
+        ...prevCompletedTodo,
+        completedTodo,
+      ]);
       console.log("Todo marked as done");
     } catch (error) {
       console.log(error);
     }
   };
+
 
   const isDone = (id) => doneTodos.includes(id);
 
@@ -154,14 +178,7 @@ const Landing = () => {
     }
   };
 
-  useEffect(() => {
-    getCompletedTodoList();
-    getTodoList();
 
-    setActiveTodos(
-      todosList.filter((todo) => !completedTodos.includes(todo._id["$oid"]))
-    );
-  }, [todosList, completedTodos]);
 
   return (
     <div className={isDarkMode ? "dark-mode main" : "light-mode main"}>

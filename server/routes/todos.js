@@ -54,6 +54,7 @@ router.put("/done/:userId/:todoId", async (req, res) => {
       return res.status(404).json({ message: "Todo not found" });
     }
     user.done = user.done.filter((id) => id !== todoId);
+    todo.state = true;
     await user.save();
 
     res.status(200).json({ message: "Todo marked as not done" });
