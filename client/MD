@@ -1,0 +1,107 @@
+
+
+            {selectedTab === "all" && (
+      
+            )}
+
+            {selectedTab === "active" && (
+                         {todos.map((todo) => (
+            <div className="list-item" key={todo._id}>
+              <label className="checkbox-container">
+                <input
+                  type="checkbox"
+                  checked={isDone(todo._id)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      addToDone(todo._id);
+                    } else {
+                      removeFromDone(todo._id);
+                    }
+                  }}
+                />
+                <span className="checkmark"></span>
+              </label>
+              <li className="item">{todo.text}</li>
+              <button
+                className="delete-button"
+                onClick={() => deleteTodoItem(todo._id)}
+              >
+                X
+              </button>
+            </div>
+          ))}
+            )}
+
+            {selectedTab === "completed" && (
+                         {todos.map((todo) => (
+            <div className="list-item" key={todo._id}>
+              <label className="checkbox-container">
+                <input
+                  type="checkbox"
+                  checked={isDone(todo._id)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      addToDone(todo._id);
+                    } else {
+                      removeFromDone(todo._id);
+                    }
+                  }}
+                />
+                <span className="checkmark"></span>
+              </label>
+              <li className="item">{todo.text}</li>
+              <button
+                className="delete-button"
+                onClick={() => deleteTodoItem(todo._id)}
+              >
+                X
+              </button>
+            </div>
+          ))}
+            )}
+
+            <div className="bottom-container">
+              <div className="tabs">
+                <div
+                  className={selectedTab === "all" ? "active-tab" : "tab"}
+                  onClick={() => setSelectedTab("all")}
+                >
+                  All
+                </div>
+                <div
+                  className={selectedTab === "active" ? "active-tab" : "tab"}
+                  onClick={() => setSelectedTab("active")}
+                >
+                  Active
+                </div>
+                <div
+                  className={selectedTab === "completed" ? "active-tab" : "tab"}
+                  onClick={() => setSelectedTab("completed")}
+                >
+                  Completed
+                </div>
+              </div>
+
+              {completedTodos.length > 0 && (
+                <div className="clear-btn">
+                  <button onClick={deleteCompletedTodos}>
+                    Clear Completed
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+      <footer>
+        <div>
+          <img src={night} alt="night mode" width="20" height="20" />
+          <Link to="/">Todo App</Link>
+        </div>
+        <p>&copy; 2023 Todo App. All rights reserved.</p>
+      </footer>
+    </div>
+  );
+};
+
+export default Landing;

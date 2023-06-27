@@ -146,6 +146,7 @@
 .links .a{
   color: var(--secondary-color);
   text-decoration: none;
+  cursor: pointer;
 }
 .links .a.active{
   color: var(--primary-color);

@@ -12,9 +12,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import "./landing.css";
-import CompletedTodos from "./todos/CompletedTodos ";
-import ActiveTodos from "./todos/ActiveTodos";
-import AllTodos from "./todos/AllTodos";
+
 
 const Landing = () => {
   const userId = window.localStorage.getItem("userId");
@@ -23,8 +21,8 @@ const Landing = () => {
   const [doneTodos, setDoneTodos] = useState([]);
   const [En, setAr] = useState(true);
   const [completedTodos, setCompletedTodos] = useState([]);
-  const [allTodosList, setAllTodo] = useState([]);
   const [activeTodos, setActiveTodos] = useState([]);
+  
   const navigate = useNavigate();
   const [todo, setTodo] = useState({
     text: "",
@@ -32,6 +30,7 @@ const Landing = () => {
     userOwner: userId,
   });
   const [todosList, setTodosList] = useState([]);
+  const [selectedTab, setSelectedTab] = useState([todosList]);
 
   const toggelMode = (e) => {
     e.preventDefault();
@@ -50,6 +49,7 @@ const Landing = () => {
         const response = await axios.get(
           `http://localhost:8080/todos?userId=${userId}`
         );
+        setSelectedTab(response.data);
         setTodosList(response.data);
       } catch (error) {
         console.error(error);
@@ -57,7 +57,7 @@ const Landing = () => {
     };
 
     fetchData();
-  }, [userId]);
+  }, [completedTodos]);
 
   useEffect(() => {
     const fetchCompletedTodos = async () => {
@@ -80,7 +80,7 @@ const Landing = () => {
     };
 
     fetchCompletedTodos();
-  }, [todosList, userId]);
+  }, [userId]);
 
   useEffect(() => {
     const fetchDoneTodos = async () => {
@@ -96,7 +96,7 @@ const Landing = () => {
     };
 
     fetchDoneTodos();
-  }, [userId]);
+  }, [completedTodos]);
 
   const changeHandler = (e) => {
     e.preventDefault();
@@ -155,24 +155,49 @@ const Landing = () => {
     }
   };
 
-  const addToDone = async (todoId) => {
-    try {
-      const response = await axios.put("http://localhost:8080/todos", {
-        todoId,
-        userId,
-      });
 
-      const completedTodo = response.data.done;
 
-      setCompletedTodos((prevCompletedTodo) => [
-        ...prevCompletedTodo,
-        completedTodo,
-      ]);
-      console.log("Todo marked as done");
-    } catch (error) {
-      console.log(error);
-    }
-  };
+const addToDone = async (todoId) => {
+  try {
+    // Make API call to mark the todo as done
+    await axios.put("http://localhost:8080/todos", {
+      todoId,
+      userId,
+    });
+
+    // Find the completed todo in the active todos list
+    const completedTodo = activeTodos.find((todo) => todo._id === todoId);
+
+    // Update the state to reflect the change
+    setCompletedTodos((prevCompletedTodos) => [...prevCompletedTodos, completedTodo]);
+    setActiveTodos((prevActiveTodos) => prevActiveTodos.filter((todo) => todo._id !== todoId));
+
+    console.log("Todo marked as done");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+
+  // const addToDone = async (todoId) => {
+  //   try {
+  //     const response = await axios.put("http://localhost:8080/todos", {
+  //       todoId,
+  //       userId,
+  //     });
+
+  //     const completedTodo = response.data.done;
+
+  //     setCompletedTodos((prevCompletedTodo) => [
+  //       ...prevCompletedTodo,
+  //       completedTodo,
+  //     ]);
+  //     console.log("Todo marked as done");
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const isDone = (id) => doneTodos.includes(id);
 
@@ -188,6 +213,7 @@ const Landing = () => {
     }
   };
 
+  
   return (
     <div className={isDarkMode ? "dark-mode main" : "light-mode main"}>
       <div className="main-container">
@@ -227,22 +253,116 @@ const Landing = () => {
               </form>
             </div>
             {/* ************************* */}
-            {/* <AllTodos/> */}
+            <div className="todos-pages">
+              <div className="todo-list">
+                <ul className="todo-ul">
+                  {/* <AllTodos/> */}
+
+                  {
+                    
+                    selectedTab.map((todo) => (
+                      <div className="list-item" key={todo._id}>
+                        <label className="checkbox-container">
+                          <input
+                            type="checkbox"
+                            checked={isDone(todo._id)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                addToDone(todo._id);
+                              } else {
+                                removeFromDone(todo._id);
+                              }
+                            }}
+                          />
+                          <span className="checkmark"></span>
+                        </label>
+                        <li className="item">{todo.text}</li>
+                        <button
+                          className="delete-button"
+                          onClick={() => deleteTodoItem(todo._id)}
+                        >
+                          X
+                        </button>
+                      </div>
+                    ))}
+
+                  {/* {selectedTab === "active" &&
+                    activeTodos.map((todo) => (
+                      <div className="list-item" key={todo._id}>
+                        <label className="checkbox-container">
+                          <input
+                            type="checkbox"
+                            checked={isDone(todo._id)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                addToDone(todo._id);
+                              } else {
+                                removeFromDone(todo._id);
+                              }
+                            }}
+                          />
+                          <span className="checkmark"></span>
+                        </label>
+                        <li className="item">{todo.text}</li>
+                        <button
+                          className="delete-button"
+                          onClick={() => deleteTodoItem(todo._id)}
+                        >
+                          X
+                        </button>
+                      </div>
+                    ))}
+
+                  {selectedTab === "completed" &&
+                    completedTodos.map((todo) => (
+                      <div className="list-item" key={todo._id}>
+                        <label className="checkbox-container">
+                          <input
+                            type="checkbox"
+                            checked={isDone(todo._id)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                addToDone(todo._id);
+                              } else {
+                                removeFromDone(todo._id);
+                              }
+                            }}
+                          />
+                          <span className="checkmark"></span>
+                        </label>
+                        <li className="item">{todo.text}</li>
+                        <button
+                          className="delete-button"
+                          onClick={() => deleteTodoItem(todo._id)}
+                        >
+                          X
+                        </button>
+                      </div>
+                    ))} */}
+
+                  {/* <AllTodos/> */}
+                </ul>
+              </div>
+            </div>
             {/* ************************* */}
+
+            <div className="bottom-container">
+         
+            </div>
             <div className="todo-footer-links">
               <span>
                 {activeTodos.length} {En ? "items left" : " المهام الباقية"}
               </span>
               <div className="links">
-                <Link to="/all" className="a">
+                <div onClick={() => setSelectedTab(todosList)} className="a">
                   {En ? "All" : " الكل"}
-                </Link>
-                <Link to="/active" className="a">
+                </div>
+                <div onClick={() => setSelectedTab(activeTodos)} className="a">
                   {En ? "Active" : "جاري العمل "}
-                </Link>
-                <Link to="/completed" className="a">
+                </div>
+                <div onClick={() => setSelectedTab(completedTodos)} className="a">
                   {En ? "Completed" : "تم"}
-                </Link>
+                </div>
               </div>
               {completedTodos.length > 0 && (
                 <>
@@ -252,45 +372,6 @@ const Landing = () => {
                 </>
               )}
             </div>
-
-            <Routes>
-              <Route
-                path="/all"
-                element={
-                  <AllTodos
-                    todos={todosList}
-                    isDone={isDone}
-                    addToDone={addToDone}
-                    removeFromDone={removeFromDone}
-                    deleteTodoItem={deleteTodoItem}
-                  />
-                }
-              />
-              <Route
-                path="/active"
-                element={
-                  <ActiveTodos
-                    todos={activeTodos}
-                    isDone={isDone}
-                    addToDone={addToDone}
-                    removeFromDone={removeFromDone}
-                    deleteTodoItem={deleteTodoItem}
-                  />
-                }
-              />
-              <Route
-                path="/completed"
-                element={
-                  <CompletedTodos
-                    todos={completedTodos}
-                    isDone={isDone}
-                    addToDone={addToDone}
-                    removeFromDone={removeFromDone}
-                    deleteTodoItem={deleteTodoItem}
-                  />
-                }
-              />
-            </Routes>
           </div>
         )}
       </div>

@@ -2,9 +2,7 @@ import React from "react";
 
 const AllTodos = ({ todos, isDone,addToDone,removeFromDone,deleteTodoItem }) => {
   return (
-    <div className="todos-pages">
-      <div className="todo-list">
-        <ul className="todo-ul">
+   <>
           {todos.map((todo) => (
             <div className="list-item" key={todo._id}>
               <label className="checkbox-container">
@@ -30,9 +28,7 @@ const AllTodos = ({ todos, isDone,addToDone,removeFromDone,deleteTodoItem }) => 
               </button>
             </div>
           ))}
-        </ul>
-      </div>
-    </div>
+    </>
   );
 };
 
