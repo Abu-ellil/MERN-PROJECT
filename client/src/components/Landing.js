@@ -257,7 +257,7 @@ const Landing = () => {
 
                   {selectedTab.map((todo) => (
                     <div className="list-item" key={todo._id}>
-                      <div className="check-todo">
+                      <div className="check-todo" >
                         <label className="checkbox-container">
                           <input
                             type="checkbox"
@@ -272,7 +272,9 @@ const Landing = () => {
                           />
                           <span className="checkmark"></span>
                         </label>
-                        <li className="item">{todo.text}</li>
+                        <li className="item" key={todo._id}>
+                          {todo.text}
+                        </li>
                       </div>
                       <button
                         className="delete-button"

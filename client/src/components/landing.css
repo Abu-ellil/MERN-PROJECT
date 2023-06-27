@@ -142,6 +142,7 @@
   margin-bottom: 0.1rem;
   border-radius: 5px;
   color: var(--secondary-color);
+  box-shadow: 0px 1px 2px #494c6b31;
 }
 .todo-footer-links .links {
   font-weight: 600;

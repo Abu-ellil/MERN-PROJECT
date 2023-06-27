@@ -3,23 +3,11 @@ import RegistrationPage from "./components/signup/RegistrationPage";
 import LoginPage from "./components/login/LoginPage";
 import Landing from "./components/Landing";
 import UserProfile from "./components/modify/UserProfile";
-
-import { createContext, useState } from "react";
-// import ReactSwitch from "react-switch";
-
-
-export const ThemeContext = createContext(null);
-
+import "./thems/dark.css"
 function App() {
-const [theme, setTheme] = useState("dark");
 
-  const toggleTheme = () => {
-    setTheme((curr) => (curr === "light" ? "dark" : "light"));
-  };
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
       <BrowserRouter>
-        {/* <Landing /> */}
         <Routes>
           <Route path="/landing" element={<Landing />} />
           <Route path="/profile" element={<UserProfile />} />
@@ -28,7 +16,6 @@ const [theme, setTheme] = useState("dark");
           <Route path="/" element={<Landing />} />
         </Routes>
       </BrowserRouter>
-    </ThemeContext.Provider>
   );
 }
 

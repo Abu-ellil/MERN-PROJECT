@@ -6,19 +6,16 @@
   box-sizing: border-box;
 }
 :root{
-  --body-background:#fff;
   --primary-color:#D375B9;
   --dark-color:#241229;
   --secondary-color:#7C8495;
-}
-[data-theme='dark']{
-   --body-background:#393A4B
-   --primary-color: #241229;
-  --dark-color:#D375B9;
-  --secondary-color:#7C8495;
+  --shadow-color:#25273D;
 }
 
-
+.main{
+  min-height: 150vh;
+  background-color: #f5f4f5;
+}
 body {
   margin: 0;
   font-family:-apple-system, BlinkMacSystemFont,  'Roboto', 'Oxygen',
@@ -26,7 +23,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--body-background);
+  background-color: #ebe8e8b6;
 }
 
 .light-mode {
@@ -39,6 +36,4 @@ body {
   color: #f5f5f5;
 }
 
-       
-        
-   
+
