@@ -12,20 +12,19 @@
   align-items: center;
 }
 .todos-main {
-  position: fixed;
+  position: absolute;
   top: 10%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* justify-content: space-between; */
+  justify-content: space-between;
   padding-top: 4rem;
   width: 40%;
-  /* height: 90vh;*/
+
 } 
 .todos-pages {
-  position: fixed;
-  width: 40%;
-  top: 30%;
+  width: 100%;
+  top: 50%;
 }
 .add-todo {
   display: flex;

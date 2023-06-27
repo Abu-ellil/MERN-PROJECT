@@ -289,7 +289,6 @@ const Landing = () => {
             </div>
             {/* ************************* */}
 
-            <div className="bottom-container"></div>
             <div className="todo-footer-links">
               <span>
                 {activeTodos.length} {En ? "items left" : " المهام الباقية"}
