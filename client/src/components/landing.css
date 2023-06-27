@@ -163,7 +163,9 @@
   font-size: 1.5rem;
   color: var(--secondary-color);
 }
-
+.add-item{
+  width: 100%;
+}
 @media (max-width: 600px) {
   .todos-main {
     padding-top: 4rem;

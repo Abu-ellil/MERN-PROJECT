@@ -134,6 +134,7 @@ const Landing = () => {
         prevTodosList.filter((todo) => todo._id !== todoId)
       );
       console.log("Todo deleted successfully");
+      window.location.reload()
     } catch (error) {
       console.log(error);
     }
@@ -159,7 +160,7 @@ const Landing = () => {
         console.error(error);
       }
     };
-
+ 
     fetchData();
   }, [userId]);
 
@@ -184,7 +185,8 @@ const Landing = () => {
      };
 
      fetchCompletedTodos();
-  }, [userId, doneTodos]);
+    
+  }, [userId, doneTodos,todosList,completedTodos,activeTodos]);
 
   useEffect(() => {
     const fetchDoneTodos = async () => {
@@ -200,8 +202,6 @@ const Landing = () => {
     };
 
     fetchDoneTodos();
-
-   
   }, [activeTodos]);
 
   return (
