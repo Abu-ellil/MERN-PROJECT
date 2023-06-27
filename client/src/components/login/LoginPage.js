@@ -1,42 +1,37 @@
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState, useEffect } from "react";
-import logo from '../../assets/main-logo.svg'
+import logo from "../../assets/main-logo.svg";
 import { Link, useNavigate } from "react-router-dom";
-import {useCookies} from 'react-cookie'
+import { useCookies } from "react-cookie";
 import axios from "axios";
-import  "./login.css";
-
-
-
-
-
-
+import "./login.css";
 
 const Login = () => {
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [data, setData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
-  const [_,setCookies] = useCookies(['access_token'])
+  const [_, setCookies] = useCookies(["access_token"]);
   const [error, setError] = useState("");
-  const navigate = useNavigate()
-
-
-
+  const navigate = useNavigate();
 
   const handleChange = ({ currentTarget: input }) => {
     setData({ ...data, [input.name]: input.value });
   };
- const handleTogglePassword = (e) => {
-  e.preventDefault()
-   setShowPassword(!showPassword);
- };
+  const handleTogglePassword = (e) => {
+    e.preventDefault();
+    setShowPassword(!showPassword);
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8080/auth/login",data);
-      setCookies('access_token',response.data.token)
+      const response = await axios.post(
+        "http://localhost:8080/auth/login",
+        data
+      );
+      setCookies("access_token", response.data.token);
       localStorage.setItem("userId", response.data.userId);
-      navigate("/")
+      localStorage.setItem("username", response.data.user.username);
+      navigate("/");
     } catch (error) {
       if (
         error.response &&

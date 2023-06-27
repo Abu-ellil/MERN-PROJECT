@@ -1,8 +1,9 @@
 import React from "react";
 import { useCookies } from "react-cookie";
+import { Link } from "react-router-dom";
 
 const DropdownWindow = ({ isOpen, onClose }) => {
-    const userName = window.localStorage.getItem("userName");
+    const userName = window.localStorage.getItem("username");
     const [cookies, setCookies] = useCookies(["access_token"]);
     const logout = () => {
       setCookies("access_token", "");
@@ -17,7 +18,7 @@ const DropdownWindow = ({ isOpen, onClose }) => {
         <div className="drop-inside">
             <h1>hi {userName}</h1>
             <div className="btns">
-          <button className="btn drop-btn-in">00000</button>
+          <Link className="btn drop-btn-in" to={'/profile'}>Modify User info</Link>
           {!cookies.access_token ? (
             <button className="btn drop-btn-out" onClick={login}>
               login

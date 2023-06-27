@@ -13,7 +13,6 @@ import {
 } from "react-router-dom";
 import "./landing.css";
 
-
 const Landing = () => {
   const userId = window.localStorage.getItem("userId");
   const [cookies, setCookies] = useCookies(["access_token"]);
@@ -22,7 +21,7 @@ const Landing = () => {
   const [En, setAr] = useState(true);
   const [completedTodos, setCompletedTodos] = useState([]);
   const [activeTodos, setActiveTodos] = useState([]);
-  
+
   const navigate = useNavigate();
   const [todo, setTodo] = useState({
     text: "",
@@ -155,49 +154,27 @@ const Landing = () => {
     }
   };
 
+  const addToDone = async (todoId) => {
+    try {
+      // Make API call to mark the todo as done
+      await axios.put("http://localhost:8080/todos", {
+        todoId,
+        userId,
+      });
+      const completedTodo = activeTodos.find((todo) => todo._id === todoId);
+      setCompletedTodos((prevCompletedTodos) => [
+        ...prevCompletedTodos,
+        completedTodo,
+      ]);
+      setActiveTodos((prevActiveTodos) =>
+        prevActiveTodos.filter((todo) => todo._id !== todoId)
+      );
 
-
-const addToDone = async (todoId) => {
-  try {
-    // Make API call to mark the todo as done
-    await axios.put("http://localhost:8080/todos", {
-      todoId,
-      userId,
-    });
-
-    // Find the completed todo in the active todos list
-    const completedTodo = activeTodos.find((todo) => todo._id === todoId);
-
-    // Update the state to reflect the change
-    setCompletedTodos((prevCompletedTodos) => [...prevCompletedTodos, completedTodo]);
-    setActiveTodos((prevActiveTodos) => prevActiveTodos.filter((todo) => todo._id !== todoId));
-
-    console.log("Todo marked as done");
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-
-
-  // const addToDone = async (todoId) => {
-  //   try {
-  //     const response = await axios.put("http://localhost:8080/todos", {
-  //       todoId,
-  //       userId,
-  //     });
-
-  //     const completedTodo = response.data.done;
-
-  //     setCompletedTodos((prevCompletedTodo) => [
-  //       ...prevCompletedTodo,
-  //       completedTodo,
-  //     ]);
-  //     console.log("Todo marked as done");
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+      console.log("Todo marked as done");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const isDone = (id) => doneTodos.includes(id);
 
@@ -213,7 +190,6 @@ const addToDone = async (todoId) => {
     }
   };
 
-  
   return (
     <div className={isDarkMode ? "dark-mode main" : "light-mode main"}>
       <div className="main-container">
@@ -258,33 +234,31 @@ const addToDone = async (todoId) => {
                 <ul className="todo-ul">
                   {/* <AllTodos/> */}
 
-                  {
-                    
-                    selectedTab.map((todo) => (
-                      <div className="list-item" key={todo._id}>
-                        <label className="checkbox-container">
-                          <input
-                            type="checkbox"
-                            checked={isDone(todo._id)}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                addToDone(todo._id);
-                              } else {
-                                removeFromDone(todo._id);
-                              }
-                            }}
-                          />
-                          <span className="checkmark"></span>
-                        </label>
-                        <li className="item">{todo.text}</li>
-                        <button
-                          className="delete-button"
-                          onClick={() => deleteTodoItem(todo._id)}
-                        >
-                          X
-                        </button>
-                      </div>
-                    ))}
+                  {selectedTab.map((todo) => (
+                    <div className="list-item" key={todo._id}>
+                      <label className="checkbox-container">
+                        <input
+                          type="checkbox"
+                          checked={isDone(todo._id)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              addToDone(todo._id);
+                            } else {
+                              removeFromDone(todo._id);
+                            }
+                          }}
+                        />
+                        <span className="checkmark"></span>
+                      </label>
+                      <li className="item">{todo.text}</li>
+                      <button
+                        className="delete-button"
+                        onClick={() => deleteTodoItem(todo._id)}
+                      >
+                        X
+                      </button>
+                    </div>
+                  ))}
 
                   {/* {selectedTab === "active" &&
                     activeTodos.map((todo) => (
@@ -346,9 +320,7 @@ const addToDone = async (todoId) => {
             </div>
             {/* ************************* */}
 
-            <div className="bottom-container">
-         
-            </div>
+            <div className="bottom-container"></div>
             <div className="todo-footer-links">
               <span>
                 {activeTodos.length} {En ? "items left" : " المهام الباقية"}
@@ -360,7 +332,10 @@ const addToDone = async (todoId) => {
                 <div onClick={() => setSelectedTab(activeTodos)} className="a">
                   {En ? "Active" : "جاري العمل "}
                 </div>
-                <div onClick={() => setSelectedTab(completedTodos)} className="a">
+                <div
+                  onClick={() => setSelectedTab(completedTodos)}
+                  className="a"
+                >
                   {En ? "Completed" : "تم"}
                 </div>
               </div>

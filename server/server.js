@@ -17,8 +17,7 @@ app.use('/auth',userRouter)
 app.use('/todos',todosRouter)
 ////
 app.get('/',(req,res)=>{
-    res.json({'helooooo':"sdfsdfsdf"})
+    res.json({'heloo':"مرحبا بكم"})
 })
-////////                    ///////
-///////                    ///////
+
 app.listen(port ,()=>{console.log(`LIVE ON ${port}...`);})

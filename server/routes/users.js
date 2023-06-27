@@ -5,6 +5,8 @@ import { UserModel } from "../models/user.js";
 
 const router = express.Router();
 
+
+///register 
 router.post("/register", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -76,6 +78,46 @@ router.post("/login", async (req, res) => {
     res.json({ token, userId: user._id ,user});
   } catch (error) {}
 });
+
+
+
+///get user data
+router.get("/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+////update data
+router.patch("/register/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { username, phone, birthYear } = req.body;
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.username = username;
+    user.phone = phone;
+    user.birthYear = birthYear;
+
+    await user.save();
+
+    res.status(200).json({ message: "User information updated successfully",user });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+    console.log(error);
+  }
+});
+
+
 
 export { router as userRouter };
  
