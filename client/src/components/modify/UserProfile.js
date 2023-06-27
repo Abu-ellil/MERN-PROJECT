@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import "./profile.css";
 
-const UserProfile = () => {
+const UserProfile = ({ profileToggle }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
@@ -15,8 +16,6 @@ const UserProfile = () => {
   const userId = window.localStorage.getItem("userId");
 
   useEffect(() => {
-    
-
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
@@ -29,14 +28,12 @@ const UserProfile = () => {
         setPhone(phone);
         setBirthYear(birthYear);
       } catch (error) {
-        // Handle error
+        console.error(error);
       }
     };
 
     fetchUserData();
   }, [userId]);
-
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,22 +64,22 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="login_container">
-      <div className="login_form_container">
-        <div className="left">
-          <form className="form_container">
-            <h1>Profile</h1>
-            <div className="email">
+    <div className="profile_container">
+      <h1>Modify User Information</h1>
+      <div className="profile_form_container">
+        <div className="pofile">
+          <form className="profile-form">
+            <div className="email p-input">
               <label>Email:</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="input"
+                className="pinput"
               />
             </div>
-            <div className="password">
+            <div className="password p-input">
               <label>Password:</label>
               <>
                 <input
@@ -90,50 +87,53 @@ const UserProfile = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="input pass"
+                  className="pinput pass"
                 />
                 <button className="eye" onClick={handleTogglePassword}>
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </button>
               </>
             </div>
-            <div className="username">
+            <div className="username p-input">
               <label>Username:</label>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                className="input"
+                className="pinput"
               />
             </div>
-            <div className="phone">
+            <div className="phone p-input">
               <label>Phone:</label>
               <input
                 type="text"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 required
-                className="input"
+                className="pinput"
               />
             </div>
-            <div className="birthYear">
+            <div className="birthYear p-input">
               <label>Birth Year:</label>
               <input
                 type="text"
                 value={birthYear}
                 onChange={(e) => setBirthYear(e.target.value)}
                 required
-                className="input"
+                className="pinput"
               />
             </div>
             {error && <div className="error_msg">{error}</div>}
             {message && <div className="success_msg">{message}</div>}
             <button type="submit" className="sign_btn" onClick={handleSubmit}>
-              Save
+              Save Changes
             </button>
             <p className="signup">
-              Already have an account? <Link to="/login">Login</Link>
+              Go To Todos{" "}
+              <button className="back" onClick={profileToggle}>
+                Home
+              </button>
             </p>
           </form>
         </div>

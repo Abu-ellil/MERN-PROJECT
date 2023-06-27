@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;700&display=swap");
 
-.main{
+.main {
   width: 100%;
-  font-family:Josefin Sans,'Almarai';
+  font-family: Josefin Sans, "Almarai";
 }
-.main-container { 
+.main-container {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -12,17 +12,17 @@
   align-items: center;
 }
 .todos-main {
-    position: fixed;
-    top: 10%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 4rem;
-    width: 40%;
-    height: 90vh;
-}
-.todos-pages{
+  position: fixed;
+  top: 10%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* justify-content: space-between; */
+  padding-top: 4rem;
+  width: 40%;
+  /* height: 90vh;*/
+} 
+.todos-pages {
   position: fixed;
   width: 40%;
   top: 30%;
@@ -34,11 +34,11 @@
   border-radius: 5px;
   width: 100%;
   margin-bottom: 1rem;
-  padding: .5rem;
+  padding: 0.5rem;
 }
-.add-todo input{
+.add-todo input {
   font-size: 1.6rem;
-  padding:.5rem;
+  padding: 0.5rem;
   width: 100%;
   border: none;
 }
@@ -53,28 +53,34 @@
   letter-spacing: -0.25px;
 }
 .list-item {
-	width: 100%;
+  width: 100%;
   font-size: 1.5rem;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   background-color: #fff;
   border: 1px solid #33333330;
   padding: 0.5rem 1rem;
-  margin-bottom: .1rem;
+  margin-bottom: 0.1rem;
   border-radius: 5px;
   border: none;
-  box-shadow:0px 1px 2px #494c6b31;
+  box-shadow: 0px 1px 2px #494c6b31;
 }
-.item{
-  font-family: Josefin Sans,'Almarai';
+.check-todo {
+  display: flex;
+}
+.item {
+  font-family: Josefin Sans, "Almarai";
   display: flex;
   align-items: center;
   background-color: #fff;
   padding: 0.5rem 1rem;
-  margin-bottom: .1rem;
+  margin-bottom: 0.1rem;
   border-radius: 5px;
 }
-
+.clear-com{
+  cursor: pointer;
+}
 /* /////////////////// */
 /* /////////////////// */
 .checkbox-container {
@@ -125,35 +131,38 @@
   transform: rotate(45deg);
 }
 /* ////////////////// */
-.todo-footer-links{
+.todo-footer-links {
   width: 100%;
   display: flex;
   justify-content: space-between;
-   font-family: Josefin Sans,'Almarai';
+  font-family: Josefin Sans, "Almarai";
   display: flex;
   align-items: center;
   background-color: #fff;
-  padding:  1.5rem;
-  margin-bottom: .1rem;
+  padding: 1.5rem;
+  margin-bottom: 0.1rem;
   border-radius: 5px;
   color: var(--secondary-color);
 }
-.todo-footer-links .links{
+.todo-footer-links .links {
   font-weight: 600;
   display: flex;
   gap: 1rem;
 }
-.links .a{
+.links .a {
   color: var(--secondary-color);
   text-decoration: none;
   cursor: pointer;
 }
-.links .a.active{
+.links .a.active {
   color: var(--primary-color);
-  
 }
-
-
+.delete-button {
+  background-color: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--secondary-color);
+}
 
 @media (max-width: 600px) {
   .todos-main {
@@ -166,7 +175,7 @@
     justify-content: center;
   }
   .list-item {
-	width: 100%;
+    width: 100%;
     font-size: 1rem;
   }
 }

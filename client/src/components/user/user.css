@@ -10,7 +10,7 @@
   background-color: #fff;
   border: 1px solid #ccc;
   padding: 10px;
-  height: 300px;
+  height: 350px;
   width: 350px;
   z-index: 22;
   border-radius: 9px;
@@ -22,7 +22,9 @@
 }
 
 .dropdown-window .close-button {
-  margin-top: 10px;
+  margin-top: 6px;
+  background-color: transparent;
+  border: none;
 }
 .dropdown-window {
   position: relative;
@@ -65,4 +67,13 @@
 }
 .drop-btn-in {
   background-color: var(--secondary-color);
+}
+
+.back {
+  background-color: var(--secondary-color);
+  padding: 1rem;
+  width: 100%;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
 }

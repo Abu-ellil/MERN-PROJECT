@@ -1,137 +1,136 @@
 .login_container {
-	width: 100%;
-	min-height: 100vh;
-	background-color: #f5f5f5;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .login_form_container {
-	width: 60%;
-	height: 500px;
-	display: flex;
-	border-radius: 10px;
-	box-shadow: 0px 3px 3px -2px rgb(0 0 0 / 20%),
-		0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%);
+  width: 60%;
+  height: 500px;
+  display: flex;
+  border-radius: 10px;
+  box-shadow: 0px 3px 3px -2px rgb(0 0 0 / 20%),
+    0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%);
 }
 
 .left {
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	background-color: white;
-	border-top-right-radius: 10px;
-	border-bottom-right-radius: 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 .form_container {
-	width: 80%;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.form_container h1 {
-	color: var(--primary-color);
-	font-size: 3rem;
-	margin-top: 0;
+.left h1 {
+  color: var(--primary-color);
+  font-size: 3rem;
+  margin-top: 0;
 }
 
 .input {
-	outline: none;
-	border: none;
-	width: 90%;
-	padding: 15px;
-	border-radius: 10px;
-	background-color: #edf5f3;
-	margin: 5px 0;
-	font-size: 14px;
+  outline: none;
+  border: none;
+  width: 100%;
+  padding: 15px;
+  border-radius: 10px;
+  background-color: #edf5f3;
+  margin: 5px 0;
+  font-size: 14px;
 }
 
 .error_msg {
-	width: 370px;
-	padding: 15px;
-	margin: 5px 0;
-	font-size: 14px;
-	background-color: #f34646;
-	color: white;
-	border-radius: 5px;
-	text-align: center;
+  width: 370px;
+  padding: 15px;
+  margin: 5px 0;
+  font-size: 14px;
+  background-color: #f34646;
+  color: white;
+  border-radius: 5px;
+  text-align: center;
 }
 
 .right {
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	background-image: url(../../assets/Cover.png);
-	background-size: cover;
-	border-top-left-radius: 10px;
-	border-bottom-left-radius: 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-image: url(../../assets/Cover.png);
+  background-size: cover;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
 }
-.right-logo{
-	align-items: center;
-	background-color: #dfa3f134;
-	padding:7rem 3rem;
-	backdrop-filter: blur(9px)
+.right-logo {
+  align-items: center;
+  background-color: #dfa3f134;
+  padding: 7rem 3rem;
+  backdrop-filter: blur(9px);
 }
-.logo-text{
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 .right h1 {
-	margin-top: 0;
-	color: white;
-	font-size: 40px;
-	align-self: center;
+  margin-top: 0;
+  color: white;
+  font-size: 40px;
+  align-self: center;
 }
 
 .white_btn,
 .sign_btn {
-	border: none;
-	outline: none;
-	padding: 12px 0;
-	background-color: white;
-	border-radius: 10px;
-	width: 97%;
-	font-weight: bold;
-	font-size: 16px;
-	cursor: pointer;
+  border: none;
+  outline: none;
+  padding: 16px 0;
+  background-color: white;
+  border-radius: 10px;
+  width: 100%;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
 }
 
 .sign_btn {
-	background-color: var(--primary-color);
-	color: white;
-	margin: 10px;
+  background-color: var(--primary-color);
+  color: white;
+  margin: 1px;
 }
-.signup{
-color: var(--secondary-color);
+.signup {
+  color: var(--secondary-color);
 }
-.signup a{
-	color: var(--primary-color);
-	text-decoration: none;
-	font-weight: 700;
+.signup a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 700;
 }
-.email{
-	width: 100%;
+.email {
+  width: 100%;
 }
-.password{
-	position: relative;
-	width: 100%;
+.password {
+  position: relative;
+  width: 100%;
 }
-.pass{
-	
+.pass {
 }
-.eye{
-	position: absolute;
-	right: 20px;
-	top: 55%;
-	border: none;
-	background-color: #f3464600;
+.eye {
+  position: absolute;
+  right: 30px;
+  top: 55%;
+  border: none;
+  color: var(--secondary-color);
 }

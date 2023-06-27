@@ -9,12 +9,10 @@ import light from "../../assets/light.svg";
 import DropdownContainer from "../user/DropdownContainer";
 
 
-export const Navbar = ({ modeToggel, toggleLang, en, mode }) => {
+export const Navbar = ({ modeToggel, toggleLang, en, mode, profile }) => {
   const [cookies, setCookies] = useCookies(["access_token"]);
   const [lang, setLang] = useState(true);
   const navigate = useNavigate();
-
-  
 
   return (
     <div className="nav">
@@ -29,8 +27,7 @@ export const Navbar = ({ modeToggel, toggleLang, en, mode }) => {
         <button className="nav-btn" onClick={modeToggel}>
           <img src={mode ? night : light} alt="" />
         </button>
-        <DropdownContainer />
-        
+        <DropdownContainer profile={profile} />
       </div>
     </div>
   );

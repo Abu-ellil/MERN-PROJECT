@@ -55,8 +55,9 @@ const Login = () => {
           </div>
         </div>
         <div className="left">
+          <h1>Login</h1>
           <form className="form_container" onSubmit={handleSubmit}>
-            <h1>Login</h1>
+            
             <div className="email">
               <label>Email:</label>
               <input
@@ -81,7 +82,7 @@ const Login = () => {
                 className="input pass"
               />
               <button className="eye" onClick={handleTogglePassword}>
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                {showPassword ?  <FaEye />:<FaEyeSlash /> }
               </button>
             </div>
 

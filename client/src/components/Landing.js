@@ -12,9 +12,11 @@ import {
   useNavigate,
 } from "react-router-dom";
 import "./landing.css";
+import UserProfile from "./modify/UserProfile";
 
 const Landing = () => {
   const userId = window.localStorage.getItem("userId");
+  const [profile, setProfile] = useState(false);
   const [cookies, setCookies] = useCookies(["access_token"]);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [doneTodos, setDoneTodos] = useState([]);
@@ -42,60 +44,7 @@ const Landing = () => {
     setAr(!En);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/todos?userId=${userId}`
-        );
-        setSelectedTab(response.data);
-        setTodosList(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
 
-    fetchData();
-  }, [completedTodos]);
-
-  useEffect(() => {
-    const fetchCompletedTodos = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/todos/done/${userId}`
-        );
-        const doneTodos = response.data.done.filter((todo) => todo !== null);
-
-        const notDoneTodos = todosList.filter(
-          (todo) =>
-            !doneTodos.some((completedTodo) => completedTodo._id === todo._id)
-        );
-
-        setCompletedTodos(doneTodos);
-        setActiveTodos(notDoneTodos);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchCompletedTodos();
-  }, [userId]);
-
-  useEffect(() => {
-    const fetchDoneTodos = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/todos/done/ids/${userId}`
-        );
-        const doneTodos = response.data.done.filter((todo) => todo !== null);
-        setDoneTodos(doneTodos);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchDoneTodos();
-  }, [completedTodos]);
 
   const changeHandler = (e) => {
     e.preventDefault();
@@ -190,10 +139,79 @@ const Landing = () => {
     }
   };
 
+  const profileToggle = () => {
+    console.log("profile");
+    setProfile(!profile);
+  };
+
+
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/todos?userId=${userId}`
+        );
+        setSelectedTab(response.data);
+        setTodosList(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, [userId]);
+
+  useEffect(() => {
+     const fetchCompletedTodos = async () => {
+       try {
+         const response = await axios.get(
+           `http://localhost:8080/todos/done/${userId}`
+         );
+         const doneTodos = response.data.done.filter((todo) => todo !== null);
+
+         const notDoneTodos = todosList.filter(
+           (todo) =>
+             !doneTodos.some((completedTodo) => completedTodo._id === todo._id)
+         );
+
+         setCompletedTodos(doneTodos);
+         setActiveTodos(notDoneTodos);
+       } catch (error) {
+         console.error(error);
+       }
+     };
+
+     fetchCompletedTodos();
+  }, [userId, doneTodos]);
+
+  useEffect(() => {
+    const fetchDoneTodos = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/todos/done/ids/${userId}`
+        );
+        const doneTodos = response.data.done.filter((todo) => todo !== null);
+        setDoneTodos(doneTodos);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchDoneTodos();
+
+   
+  }, [activeTodos]);
+
   return (
     <div className={isDarkMode ? "dark-mode main" : "light-mode main"}>
       <div className="main-container">
-        <Navbar modeToggel={toggelMode} toggleLang={toggelLang} />
+        <Navbar
+          modeToggel={toggelMode}
+          toggleLang={toggelLang}
+          profile={profileToggle}
+        />
         <div
           style={{
             backgroundImage: `url(${backgroundImage})`,
@@ -203,7 +221,10 @@ const Landing = () => {
             height: "25vh",
           }}
         ></div>
-        {!cookies.access_token ? (
+
+        {profile ? (
+          <UserProfile profileToggle={profileToggle} />
+        ) : true && !cookies.access_token ? (
           navigate("/login")
         ) : (
           <div className="todos-main">
@@ -216,7 +237,7 @@ const Landing = () => {
                 />
                 <span className="checkmark"></span>
               </label>
-              <form className="list-item" onBlur={addTodo}>
+              <form className="add-item" onBlur={addTodo}>
                 <label htmlFor="text"></label>
                 <input
                   type="text"
@@ -236,21 +257,23 @@ const Landing = () => {
 
                   {selectedTab.map((todo) => (
                     <div className="list-item" key={todo._id}>
-                      <label className="checkbox-container">
-                        <input
-                          type="checkbox"
-                          checked={isDone(todo._id)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              addToDone(todo._id);
-                            } else {
-                              removeFromDone(todo._id);
-                            }
-                          }}
-                        />
-                        <span className="checkmark"></span>
-                      </label>
-                      <li className="item">{todo.text}</li>
+                      <div className="check-todo">
+                        <label className="checkbox-container">
+                          <input
+                            type="checkbox"
+                            checked={isDone(todo._id)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                addToDone(todo._id);
+                              } else {
+                                removeFromDone(todo._id);
+                              }
+                            }}
+                          />
+                          <span className="checkmark"></span>
+                        </label>
+                        <li className="item">{todo.text}</li>
+                      </div>
                       <button
                         className="delete-button"
                         onClick={() => deleteTodoItem(todo._id)}
@@ -259,60 +282,6 @@ const Landing = () => {
                       </button>
                     </div>
                   ))}
-
-                  {/* {selectedTab === "active" &&
-                    activeTodos.map((todo) => (
-                      <div className="list-item" key={todo._id}>
-                        <label className="checkbox-container">
-                          <input
-                            type="checkbox"
-                            checked={isDone(todo._id)}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                addToDone(todo._id);
-                              } else {
-                                removeFromDone(todo._id);
-                              }
-                            }}
-                          />
-                          <span className="checkmark"></span>
-                        </label>
-                        <li className="item">{todo.text}</li>
-                        <button
-                          className="delete-button"
-                          onClick={() => deleteTodoItem(todo._id)}
-                        >
-                          X
-                        </button>
-                      </div>
-                    ))}
-
-                  {selectedTab === "completed" &&
-                    completedTodos.map((todo) => (
-                      <div className="list-item" key={todo._id}>
-                        <label className="checkbox-container">
-                          <input
-                            type="checkbox"
-                            checked={isDone(todo._id)}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                addToDone(todo._id);
-                              } else {
-                                removeFromDone(todo._id);
-                              }
-                            }}
-                          />
-                          <span className="checkmark"></span>
-                        </label>
-                        <li className="item">{todo.text}</li>
-                        <button
-                          className="delete-button"
-                          onClick={() => deleteTodoItem(todo._id)}
-                        >
-                          X
-                        </button>
-                      </div>
-                    ))} */}
 
                   {/* <AllTodos/> */}
                 </ul>
