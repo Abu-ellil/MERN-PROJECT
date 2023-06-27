@@ -19,7 +19,7 @@ const RegistrationPage = () => {
     setStep(2);
     setUserId(id);
   };
-
+               
   const handleComplete = () => {
     navigate("/login");
   };
