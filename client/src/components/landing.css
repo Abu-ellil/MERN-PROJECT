@@ -155,6 +155,17 @@
   text-decoration: none;
   cursor: pointer;
 }
+.links .a:hover , .clear-com:hover{
+  color: var(--primary-color);
+}
+.not-done:hover{
+  color: #fff;
+  background-color: var(--primary-color);
+  padding: .5rem ;
+  border-radius: 9px;
+  transform: scale(1.4);
+  transition: all .5s ease-in-out;
+}
 .links .a.active {
   color: var(--primary-color);
 }
@@ -167,20 +178,81 @@
 .add-item{
   width: 100%;
 }
-@media (max-width: 600px) {
-  .todos-main {
-    padding-top: 4rem;
-    width: 100%;
-  }
-  .todo-list {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .list-item {
-    width: 100%;
-    font-size: 1rem;
-  }
+.mid{
+  padding-left: 10px;
+  padding-right: 10px;
+  border-left: 1px solid #202020;
+  border-right: 1px solid #202020;
 }
+
+
+
+/* ========= */
+
+@media screen and (max-width: 1000px) {
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;700&display=swap");
+
+.main {
+font-family: Josefin Sans, "Almarai";
+}
+
+.main-container {
+/* padding: 0 1rem; */
+}
+
+.todos-main {
+top: 5%;
+width: 80%;
+padding-top: 2rem;
+}
+
+.add-todo {
+margin-bottom: 0.5rem;
+}
+
+.add-todo input {
+font-size: 1.2rem;
+}
+
+.todo-list {
+width: 100%;
+}
+
+.todo-ul {
+font-size: 14px;
+}
+
+.list-item {
+font-size: 1.2rem;
+padding: 0.3rem 0.6rem;
+margin-bottom: 0.5rem;
+}
+
+.checkbox-container {
+padding-left: 20px;
+}
+
+.checkmark {
+height: 20px;
+width: 20px;
+}
+
+.checkmark:after {
+left: 7px;
+top: 3px;
+width: 4px;
+height: 8px;
+}
+
+.todo-footer-links {
+padding: 1rem;
+margin-bottom: 0.5rem;
+}
+
+.delete-button {
+font-size: 1.2rem;
+}
+}
+
 
 

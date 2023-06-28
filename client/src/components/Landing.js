@@ -47,11 +47,20 @@ useEffect(() => {
   setIsDarkMode(mode === "true");
 }, []);
 
-  const toggelLang = (e) => {
-    e.preventDefault();
-    setAr(!En);
-    console.log('Lang Togg');
-  };
+ const toggelLang = (e) => {
+   e.preventDefault();
+   const updatedEn = !En;
+   localStorage.setItem("language", JSON.stringify(updatedEn));
+   setAr(updatedEn);
+ };
+
+ useEffect(() => {
+   const storedLanguage = localStorage.getItem("language");
+   if (storedLanguage) {
+     const parsedLanguage = JSON.parse(storedLanguage);
+     setAr(parsedLanguage);
+   }
+ }, []);
 
 
 
@@ -169,6 +178,7 @@ useEffect(() => {
         const response = await axios.get(
           `http://localhost:8080/todos?userId=${userId}`
         );
+        localStorage.setItem("localList", JSON.stringify(response.data));
         setSelectedTab(response.data);
         setTodosList(response.data);
       } catch (error) {
@@ -180,6 +190,14 @@ useEffect(() => {
     fetchData();
     
   }, [userId]);
+  useEffect(() => {
+    const storedList = localStorage.getItem("localList");
+    if (storedList) {
+      const parsedList = JSON.parse(storedList);
+      setSelectedTab(parsedList);
+      setTodosList(parsedList);
+    }
+  }, []);
 
   useEffect(() => {
      const fetchCompletedTodos = async () => {
@@ -270,7 +288,7 @@ useEffect(() => {
                   id="text"
                   name="text"
                   onChange={changeHandler}
-                  placeholder="Add New Todo..."
+                  placeholder={En ? "Add New Todo..." : "انشاء مهمة جديدة."}
                   value={todo.text}
                 />
               </form>
@@ -329,21 +347,29 @@ useEffect(() => {
             {/* ************************* */}
 
             <div className="todo-footer-links">
-              <span>
-                {activeTodos.length} {En ? "items left" : " المهام الباقية"}
+              <span className="not-done">
+                {activeTodos.length} {En ? "items left" : "مهام باقية"}
               </span>
               <div className="links">
-                <div onClick={() => setSelectedTab(todosList)} className="a">
+                <div
+                  onClick={() => setSelectedTab(todosList)}
+                  className={selectedTab === todosList ? "a active" : "a"}
+                >
                   {En ? "All" : " الكل"}
                 </div>
-                <div onClick={() => setSelectedTab(activeTodos)} className="a">
-                  {En ? "Active" : "جاري العمل "}
+                <div
+                  onClick={() => setSelectedTab(activeTodos)}
+                  className={
+                    selectedTab === activeTodos ? "a mid active" : "a mid"
+                  }
+                >
+                  {En ? "Active" : "نشط"}
                 </div>
                 <div
                   onClick={() => setSelectedTab(completedTodos)}
-                  className="a"
+                  className={selectedTab === completedTodos ? "a active" : "a"}
                 >
-                  {En ? "Completed" : "تم"}
+                  {En ? "Completed" : "مكتمل"}
                 </div>
               </div>
               {completedTodos.length > 0 && (
