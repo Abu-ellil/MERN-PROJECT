@@ -10,7 +10,7 @@ import Step1Form from "./Step1Form";
 import Step2Form from "./Step2Form";
 import LoginPage from "../../components/login/LoginPage";
 
-const RegistrationPage = () => {
+const RegistrationPage = ({ toggleLang, En }) => {
   const [userId, setUserId] = useState(null);
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const RegistrationPage = () => {
     setStep(2);
     setUserId(id);
   };
-               
+
   const handleComplete = () => {
     navigate("/login");
   };

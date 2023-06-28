@@ -13,6 +13,7 @@ import {
 } from "react-router-dom";
 import "./landing.css";
 import UserProfile from "./modify/UserProfile";
+import ErrorPage from "../errors/ErrorPage";
 
 const Landing = () => {
   const userId = window.localStorage.getItem("userId");
@@ -23,8 +24,8 @@ const Landing = () => {
   const [En, setAr] = useState(true);
   const [completedTodos, setCompletedTodos] = useState([]);
   const [activeTodos, setActiveTodos] = useState([]);
-
   const navigate = useNavigate();
+  const [error, setError] = useState(false);
   const [todo, setTodo] = useState({
     text: "",
     state: false,
@@ -32,16 +33,24 @@ const Landing = () => {
   });
   const [todosList, setTodosList] = useState([]);
   const [selectedTab, setSelectedTab] = useState([todosList]);
+  const mode = localStorage.getItem('darkMode')
+   
 
-  const toggelMode = (e) => {
-    e.preventDefault();
-    setIsDarkMode(!isDarkMode);
-    console.log("toggle");
-  };
+const toggelMode = (e) => {
+  e.preventDefault();
+  localStorage.setItem("darkMode", String(!isDarkMode));
+  setIsDarkMode(!isDarkMode);
+};
+
+useEffect(() => {
+  const mode = localStorage.getItem("darkMode");
+  setIsDarkMode(mode === "true");
+}, []);
 
   const toggelLang = (e) => {
     e.preventDefault();
     setAr(!En);
+    console.log('Lang Togg');
   };
 
 
@@ -64,10 +73,34 @@ const Landing = () => {
         userOwner: userId,
       });
     } catch (error) {
+       setError(true);
       console.log(error);
     }
   };
 
+  /////ADD TO & REMOVE FROM DONE
+  const addToDone = async (todoId) => {
+    try {
+      // Make API call to mark the todo as done
+      await axios.put("http://localhost:8080/todos", {
+        todoId,
+        userId,
+      });
+      const completedTodo = activeTodos.find((todo) => todo._id === todoId);
+      setCompletedTodos((prevCompletedTodos) => [
+        ...prevCompletedTodos,
+        completedTodo,
+      ]);
+      setActiveTodos((prevActiveTodos) =>
+        prevActiveTodos.filter((todo) => todo._id !== todoId)
+      );
+
+      console.log("Todo marked as done");
+    } catch (error) {
+      setError(true);
+      console.log(error);
+    }
+  };
   const removeFromDone = async (todoId) => {
     try {
       await axios.delete(
@@ -78,6 +111,7 @@ const Landing = () => {
       );
       console.log("Todo marked as not done");
     } catch (error) {
+       setError(true);
       console.log(error);
     }
   };
@@ -99,31 +133,12 @@ const Landing = () => {
       setCompletedTodos([]);
       console.log("Completed todos cleared");
     } catch (error) {
+       setError(true);
       console.log(error);
     }
   };
 
-  const addToDone = async (todoId) => {
-    try {
-      // Make API call to mark the todo as done
-      await axios.put("http://localhost:8080/todos", {
-        todoId,
-        userId,
-      });
-      const completedTodo = activeTodos.find((todo) => todo._id === todoId);
-      setCompletedTodos((prevCompletedTodos) => [
-        ...prevCompletedTodos,
-        completedTodo,
-      ]);
-      setActiveTodos((prevActiveTodos) =>
-        prevActiveTodos.filter((todo) => todo._id !== todoId)
-      );
 
-      console.log("Todo marked as done");
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const isDone = (id) => doneTodos.includes(id);
 
@@ -136,12 +151,12 @@ const Landing = () => {
       console.log("Todo deleted successfully");
       window.location.reload()
     } catch (error) {
+       setError(true);
       console.log(error);
     }
   };
 
   const profileToggle = () => {
-    console.log("profile");
     setProfile(!profile);
   };
 
@@ -158,10 +173,12 @@ const Landing = () => {
         setTodosList(response.data);
       } catch (error) {
         console.error(error);
+         setError(true);
       }
     };
  
     fetchData();
+    
   }, [userId]);
 
   useEffect(() => {
@@ -180,12 +197,13 @@ const Landing = () => {
          setCompletedTodos(doneTodos);
          setActiveTodos(notDoneTodos);
        } catch (error) {
+         setError(true);
          console.error(error);
        }
      };
 
      fetchCompletedTodos();
-    
+   
   }, [userId, doneTodos,todosList,completedTodos,activeTodos]);
 
   useEffect(() => {
@@ -198,19 +216,27 @@ const Landing = () => {
         setDoneTodos(doneTodos);
       } catch (error) {
         console.error(error);
+        setError(true);
       }
     };
-
     fetchDoneTodos();
   }, [activeTodos]);
 
   return (
-    <div className={isDarkMode ? "dark-mode main" : "light-mode main"}>
+    <div
+      className={
+        isDarkMode
+          ? `dark-mode main ${En ? "Ar" : "rtl"}`
+          : `light-mode main ${En ? "Ar" : "rtl"}`
+      }
+    >
       <div className="main-container">
         <Navbar
           modeToggel={toggelMode}
           toggleLang={toggelLang}
           profile={profileToggle}
+          en={En}
+          mode={!isDarkMode}
         />
         <div
           style={{
@@ -255,35 +281,46 @@ const Landing = () => {
                 <ul className="todo-ul">
                   {/* <AllTodos/> */}
 
-                  {selectedTab.map((todo) => (
-                    <div className="list-item" key={todo._id}>
-                      <div className="check-todo" >
-                        <label className="checkbox-container">
-                          <input
-                            type="checkbox"
-                            checked={isDone(todo._id)}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                addToDone(todo._id);
-                              } else {
-                                removeFromDone(todo._id);
-                              }
-                            }}
-                          />
-                          <span className="checkmark"></span>
-                        </label>
-                        <li className="item" key={todo._id}>
-                          {todo.text}
-                        </li>
+                  {error ? (
+                    <ErrorPage />
+                  ) : (
+                    selectedTab.map((todo) => (
+                      <div className="list-item" key={todo._id}>
+                        <div className="check-todo">
+                          <label className="checkbox-container">
+                            <input
+                              type="checkbox"
+                              checked={isDone(todo._id)}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  addToDone(todo._id);
+                                } else {
+                                  removeFromDone(todo._id);
+                                }
+                              }}
+                            />
+                            <span className="checkmark"></span>
+                          </label>
+                          <li
+                            key={todo._id}
+                            className={
+                              doneTodos.includes(todo._id)
+                                ? "done item"
+                                : "item"
+                            }
+                          >
+                            {todo.text}
+                          </li>
+                        </div>
+                        <button
+                          className="delete-button"
+                          onClick={() => deleteTodoItem(todo._id)}
+                        >
+                          X
+                        </button>
                       </div>
-                      <button
-                        className="delete-button"
-                        onClick={() => deleteTodoItem(todo._id)}
-                      >
-                        X
-                      </button>
-                    </div>
-                  ))}
+                    ))
+                  )}
 
                   {/* <AllTodos/> */}
                 </ul>

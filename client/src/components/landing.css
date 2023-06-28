@@ -120,6 +120,7 @@
   display: block;
 }
 
+
 .checkbox-container .checkmark:after {
   left: 9px;
   top: 5px;
@@ -181,3 +182,5 @@
     font-size: 1rem;
   }
 }
+
+

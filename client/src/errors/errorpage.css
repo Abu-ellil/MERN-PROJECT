@@ -1,0 +1,15 @@
+.error-page{
+    height: 500px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    padding: 3rem;
+    gap: 2rem;
+}
+.error-page h1{
+    color: rgb(250, 4, 4);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+}

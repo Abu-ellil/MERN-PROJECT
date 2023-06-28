@@ -24,8 +24,8 @@ export const Navbar = ({ modeToggel, toggleLang, en, mode, profile }) => {
         <button className="nav-btn lang" onClick={toggleLang}>
           {en ? "Ar" : "En "}
         </button>
-        <button className="nav-btn" onClick={modeToggel}>
-          <img src={mode ? night : light} alt="" />
+        <button className="nav-btn " onClick={modeToggel}>
+          <img src={mode ? night : light} alt="toggle mode icon" />
         </button>
         <DropdownContainer profile={profile} />
       </div>

@@ -4,11 +4,16 @@ import logo from "../../assets/main-logo.svg";
 import { Link } from "react-router-dom";
 
 
-const Step2Form = ({ handleComplete, userId }) => {
+const Step2Form = ({ handleComplete, userId,toggleLang,en }) => {
   const [username, setUsername] = useState("");
   const [phone, setPhone] = useState("");
   const [birthYear, setBirthYear] = useState("");
-
+  const [En, setAr] = useState(true);
+  const toggelLang = (e) => {
+    e.preventDefault();
+    setAr(!En);
+    console.log("Lang Togg");
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -28,21 +33,27 @@ const Step2Form = ({ handleComplete, userId }) => {
 
 
   return (
-    <div className="login_container">
+    <div className={`login_container ${En ? "Ar" : "rtl"}`}>
       <div className="login_form_container">
         <div className="right">
+          <div></div>
           <div className="right-logo">
             <div className="logo-text">
               <img src={logo} alt="" />
               <h1>Your Notes</h1>
             </div>
           </div>
+          <div className="lang-btn-container">
+            <button className="nav-btn lang lang-log" onClick={toggelLang}>
+              {En ? "Ar" : "En "}
+            </button>
+          </div>
         </div>
         <div className="left">
           <form className="form_container" onSubmit={handleSubmit}>
-            <h1>Complete Signup</h1>
+            <h1>{En ? "Complete Signup" : "اكمال البيانات"}</h1>
             <div className="email">
-              <label>Username:</label>
+              <label>{En ? "Username:" : ":اسم المستخدم"}</label>
               <input
                 type="text"
                 value={username}
@@ -52,7 +63,7 @@ const Step2Form = ({ handleComplete, userId }) => {
               />
             </div>
             <div className="email">
-              <label>Phone:</label>
+              <label>Phone:{En ? "Phone:" : "الهاتف:"}</label>
               <input
                 type="text"
                 value={phone}
@@ -62,7 +73,7 @@ const Step2Form = ({ handleComplete, userId }) => {
               />
             </div>
             <div className="email">
-              <label>Birth Year:</label>
+              <label>{En ? "Birth Year:" : "سنة الميلاد:"}</label>
               <input
                 type="text"
                 value={birthYear}
@@ -72,10 +83,11 @@ const Step2Form = ({ handleComplete, userId }) => {
               />
             </div>
             <button type="submit" className="sign_btn">
-              Complete Registration
+              {En ? "Complete Registration" : "انهاء التسجيل"}
             </button>
             <p className="signup">
-              Already have an account? <Link to="/login">Login</Link>
+              {En ? "Already have an account?" : "لديك حساب بالفعل؟"}{" "}
+              <Link to="/login">{En ? "Login" : "تسجيل الدخول"}</Link>
             </p>
           </form>
         </div>

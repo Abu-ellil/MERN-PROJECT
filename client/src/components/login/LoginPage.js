@@ -14,6 +14,13 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  const [En, setAr] = useState(true);
+   const toggelLang = (e) => {
+     e.preventDefault();
+     setAr(!En);
+     console.log("Lang Togg");
+   };
+
   const handleChange = ({ currentTarget: input }) => {
     setData({ ...data, [input.name]: input.value });
   };
@@ -42,24 +49,30 @@ const Login = () => {
       }
     }
   };
+ 
 
   return (
-    <div className="login_container">
+    <div className={`login_container ${En ? "Ar" : "rtl"}`}>
       <div className="login_form_container">
         <div className="right">
+          <div></div>
           <div className="right-logo">
             <div className="logo-text">
               <img src={logo} alt="" />
               <h1>Your Notes</h1>
             </div>
           </div>
+          <div className="lang-btn-container">
+            <button className="nav-btn lang lang-log" onClick={toggelLang}>
+              {En ? "Ar" : "En "}
+            </button>
+          </div>
         </div>
         <div className="left">
-          <h1>Login</h1>
+          <h1> {En ? "Login" : "تسجيل دخول"}</h1>
           <form className="form_container" onSubmit={handleSubmit}>
-            
             <div className="email">
-              <label>Email:</label>
+              <label> {En ? "Email:" : "البريد:"}</label>
               <input
                 type="email"
                 placeholder="Email"
@@ -71,7 +84,7 @@ const Login = () => {
               />
             </div>
             <div className="password">
-              <label>Password:</label>
+              <label> {En ? "Password:" : "كلمة المرور"}</label>
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
@@ -82,16 +95,17 @@ const Login = () => {
                 className="input pass"
               />
               <button className="eye" onClick={handleTogglePassword}>
-                {showPassword ?  <FaEye />:<FaEyeSlash /> }
+                {showPassword ? <FaEye /> : <FaEyeSlash />}
               </button>
             </div>
 
             {error && <div className="error_msg">{error}</div>}
             <button type="submit" className="sign_btn">
-              Sing In
+              {En ? "Sing In" : "سجل الدخول"}
             </button>
             <p className="signup">
-              Don't have an account? <Link to="/signup">Sing Up</Link>
+              {En ? "Don't have an account?" : "ليس لديك حساب؟ يمكنك من هنا"}
+              <Link to="/signup"> {En ? "Sing Up" : " انشاء حساب"}</Link>
             </p>
           </form>
         </div>
