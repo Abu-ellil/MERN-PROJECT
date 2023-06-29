@@ -60,7 +60,7 @@ router.post("/register/:userId", async (req, res) => {
     console.log(error);
   }
 });
-
+//////login
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -98,12 +98,14 @@ router.get("/:userId", async (req, res) => {
 router.patch("/register/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
-    const { username, phone, birthYear } = req.body;
+    const {email,password, username, phone, birthYear } = req.body;
     const user = await UserModel.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
+    user.email = email;
+    user.password = password;
     user.username = username;
     user.phone = phone;
     user.birthYear = birthYear;

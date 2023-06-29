@@ -7,7 +7,8 @@ import { userRouter } from "./routes/users.js"
 import { todosRouter } from "./routes/todos.js"
 
 ////DATABASE & PORT
-mongoose.connect('mongodb+srv://mrabuellil:mrabuellil@mern-todo.ff0xnlu.mongodb.net/mern-todo?retryWrites=true&w=majority',{useNewUrlParser:true,useUnifiedTopology:true})
+const URL = process.env.URL
+mongoose.connect(URL,{useNewUrlParser:true,useUnifiedTopology:true})
 const port = process.env.PORT || 8080
 ////MIDDLERS
 app.use(express.json())

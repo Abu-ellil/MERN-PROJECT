@@ -1,9 +1,4 @@
-import backgroundImage from "../assets/main-cover.png";
 import React, { useState, useEffect } from "react";
-import night from "../assets/Combined Shape.svg";
-import { useCookies } from "react-cookie";
-import { Navbar } from "./nav/Navbar";
-import axios from "axios";
 import {
   BrowserRouter as Router,
   Routes,
@@ -11,9 +6,14 @@ import {
   Link,
   useNavigate,
 } from "react-router-dom";
-import "./landing.css";
+import { useCookies } from "react-cookie";
+import axios from "axios";
+import { Navbar } from "./nav/Navbar";
 import UserProfile from "./modify/UserProfile";
 import ErrorPage from "../errors/ErrorPage";
+import backgroundImage from "../assets/main-cover.png";
+import night from "../assets/Combined Shape.svg";
+import "./landing.css";
 
 const Landing = () => {
   const userId = window.localStorage.getItem("userId");
@@ -33,27 +33,88 @@ const Landing = () => {
   });
   const [todosList, setTodosList] = useState([]);
   const [selectedTab, setSelectedTab] = useState([todosList]);
-  const mode = localStorage.getItem('darkMode')
-
-
-
-useEffect(() => {
   const mode = localStorage.getItem("darkMode");
-  setIsDarkMode(mode === "true");
-}, []);
 
+  useEffect(() => {
+    const mode = localStorage.getItem("darkMode");
+    setIsDarkMode(mode === "true");
+  }, []);
 
- useEffect(() => {
-   const storedLanguage = localStorage.getItem("language");
-   if (storedLanguage) {
-     const parsedLanguage = JSON.parse(storedLanguage);
-     setAr(parsedLanguage);
-   }
- }, []);
+  useEffect(() => {
+    const storedLanguage = localStorage.getItem("language");
+    if (storedLanguage) {
+      const parsedLanguage = JSON.parse(storedLanguage);
+      setAr(parsedLanguage);
+    }
+  }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/todos?userId=${userId}`
+        );
+        localStorage.setItem("localList", JSON.stringify(response.data));
+        setSelectedTab(response.data);
+        setTodosList(response.data);
+      } catch (error) {
+        console.error(error);
+        setError(true);
+      }
+    };
 
+    fetchData();
+  }, [userId]);
 
- 
+  useEffect(() => {
+    const storedList = localStorage.getItem("localList");
+    if (storedList) {
+      const parsedList = JSON.parse(storedList);
+      setSelectedTab(parsedList);
+      setTodosList(parsedList);
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    const fetchCompletedTodos = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/todos/done/${userId}`
+        );
+        const doneTodos = response.data.done.filter((todo) => todo !== null);
+
+        const notDoneTodos = todosList.filter(
+          (todo) =>
+            !doneTodos.some((completedTodo) => completedTodo._id === todo._id)
+        );
+
+        setCompletedTodos(doneTodos);
+        setActiveTodos(notDoneTodos);
+      } catch (error) {
+        setError(true);
+        console.error(error);
+      }
+    };
+
+    fetchCompletedTodos();
+  }, [userId, doneTodos, completedTodos, activeTodos]);
+
+  useEffect(() => {
+    const fetchDoneTodos = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/todos/done/ids/${userId}`
+        );
+        const doneTodos = response.data.done.filter((todo) => todo !== null);
+        setDoneTodos(doneTodos);
+      } catch (error) {
+        console.error(error);
+        setError(true);
+      }
+    };
+    fetchDoneTodos();
+  }, [activeTodos]);
+
   const addTodo = async (e) => {
     e.preventDefault();
     try {
@@ -65,15 +126,13 @@ useEffect(() => {
         userOwner: userId,
       });
     } catch (error) {
-       setError(true);
+      setError(true);
       console.log(error);
     }
   };
 
-  /////ADD TO & REMOVE FROM DONE
   const addToDone = async (todoId) => {
     try {
-      // Make API call to mark the todo as done
       await axios.put("http://localhost:8080/todos", {
         todoId,
         userId,
@@ -93,6 +152,7 @@ useEffect(() => {
       console.log(error);
     }
   };
+
   const removeFromDone = async (todoId) => {
     try {
       await axios.delete(
@@ -103,7 +163,7 @@ useEffect(() => {
       );
       console.log("Todo marked as not done");
     } catch (error) {
-       setError(true);
+      setError(true);
       console.log(error);
     }
   };
@@ -125,12 +185,10 @@ useEffect(() => {
       setCompletedTodos([]);
       console.log("Completed todos cleared");
     } catch (error) {
-       setError(true);
+      setError(true);
       console.log(error);
     }
   };
-
-
 
   const isDone = (id) => doneTodos.includes(id);
 
@@ -141,9 +199,9 @@ useEffect(() => {
         prevTodosList.filter((todo) => todo._id !== todoId)
       );
       console.log("Todo deleted successfully");
-      window.location.reload()
+      window.location.reload();
     } catch (error) {
-       setError(true);
+      setError(true);
       console.log(error);
     }
   };
@@ -152,100 +210,26 @@ useEffect(() => {
     setProfile(!profile);
   };
 
+  const toggelLang = (e) => {
+    e.preventDefault();
+    const updatedEn = !En;
+    localStorage.setItem("language", JSON.stringify(updatedEn));
+    setAr(updatedEn);
+  };
 
+  const toggelMode = (e) => {
+    e.preventDefault();
+    localStorage.setItem("darkMode", String(!isDarkMode));
+    setIsDarkMode(!isDarkMode);
+  };
 
+  const changeHandler = (e) => {
+    e.preventDefault();
+    const { name, value } = e.target;
+    setTodo({ ...todo, [name]: value });
+    e.target = "";
+  };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/todos?userId=${userId}`
-        );
-        localStorage.setItem("localList", JSON.stringify(response.data));
-        setSelectedTab(response.data);
-        setTodosList(response.data);
-      } catch (error) {
-        console.error(error);
-         setError(true);
-      }
-    };
- 
-    fetchData();
-    
-  }, [userId]);
-  useEffect(() => {
-    const storedList = localStorage.getItem("localList");
-    if (storedList) {
-      const parsedList = JSON.parse(storedList);
-      setSelectedTab(parsedList);
-      setTodosList(parsedList);
-    }
-  }, [userId]);
-
-  useEffect(() => {
-     const fetchCompletedTodos = async () => {
-       try {
-         const response = await axios.get(
-           `http://localhost:8080/todos/done/${userId}`
-         );
-         const doneTodos = response.data.done.filter((todo) => todo !== null);
-
-         const notDoneTodos = todosList.filter(
-           (todo) =>
-             !doneTodos.some((completedTodo) => completedTodo._id === todo._id)
-         );
-
-         setCompletedTodos(doneTodos);
-         setActiveTodos(notDoneTodos);
-       } catch (error) {
-         setError(true);
-         console.error(error);
-       }
-     };
-
-     fetchCompletedTodos();
-   
-  }, [userId, doneTodos,completedTodos,activeTodos]);
-
-  useEffect(() => {
-    const fetchDoneTodos = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/todos/done/ids/${userId}`
-        );
-        const doneTodos = response.data.done.filter((todo) => todo !== null);
-        setDoneTodos(doneTodos);
-      } catch (error) {
-        console.error(error);
-        setError(true);
-      }
-    };
-    fetchDoneTodos();
-  }, [activeTodos]);
-
-     
- const toggelLang = (e) => {
-   e.preventDefault();
-   const updatedEn = !En;
-   localStorage.setItem("language", JSON.stringify(updatedEn));
-   setAr(updatedEn);
- };
-
-const toggelMode = (e) => {
-  e.preventDefault();
-  localStorage.setItem("darkMode", String(!isDarkMode));
-  setIsDarkMode(!isDarkMode);
-};
-const changeHandler = (e) => {
-  e.preventDefault();
-  const { name, value } = e.target;
-  setTodo({ ...todo, [name]: value });
-  e.target = "";
-};
-
-// **************
-// **************
-// **************
   return (
     <div
       className={
@@ -299,17 +283,14 @@ const changeHandler = (e) => {
                 />
               </form>
             </div>
-            {/* ************************* */}
             <div className="todos-pages">
               <div className="todo-list">
                 <ul className="todo-ul">
-                  {/* <AllTodos/> */}
-
                   {error ? (
                     <ErrorPage />
                   ) : (
                     selectedTab.map((todo) => (
-                      <div className="list-item" key={todo._id}>
+                      <div className="list-item" key={todo._id+2}>
                         <div className="check-todo">
                           <label className="checkbox-container">
                             <input
@@ -326,7 +307,7 @@ const changeHandler = (e) => {
                             <span className="checkmark"></span>
                           </label>
                           <li
-                            key={todo._id}
+                            key={todo._id +1}
                             className={
                               doneTodos.includes(todo._id)
                                 ? "done item"
@@ -345,12 +326,9 @@ const changeHandler = (e) => {
                       </div>
                     ))
                   )}
-
-                  {/* <AllTodos/> */}
                 </ul>
               </div>
             </div>
-            {/* ************************* */}
 
             <div className="todo-footer-links">
               <span className="not-done">
