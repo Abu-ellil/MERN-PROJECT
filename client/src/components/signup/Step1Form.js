@@ -4,12 +4,13 @@ import { Link } from "react-router-dom";
 import logo from "../../assets/main-logo.svg";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-const Step1Form = ({ handleNext,toggleLang,en }) => {
+const Step1Form = ({ handleNext, toggleLang, en }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
-const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
 
   const [En, setAr] = useState(true);
   const toggelLang = (e) => {
@@ -21,41 +22,50 @@ const [showErrorMessage, setShowErrorMessage] = useState(false);
     e.preventDefault();
     setShowPassword(!showPassword);
   };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      const response = await axios.post("http://localhost:8080/auth/register", {
+  if (password !== confirmPassword) {
+    setError("Passwords do not match");
+    return;
+  }
+
+  try {
+    const response = await axios.post(
+      "https://mern-todo-project-my1v.onrender.com/auth/register",
+      {
         email,
         password,
-      });
-      const userId = response.data.userId;
-
-
-      await handleNext(userId);
-
-
-    } catch (error) {
-      if (
-        error.response &&
-        error.response.status >= 400 &&
-        error.response.status <= 500
-      ) {
-        setError(error.response.data.message);
       }
-    }
-  };
-useEffect(() => {
-  if (error) {
-    setShowErrorMessage(true);
-    const timer = setTimeout(() => {
-      setShowErrorMessage(false);
-      setError("");
-    }, 3000);
+    );
+    const userId = response.data.userId;
 
-    return () => clearTimeout(timer);
+    await handleNext(userId);
+  } catch (error) {
+    if (error.response && error.response.status === 409) {
+      setError("Email already exists"); // Set a custom error message for status code 409
+    } else if (
+      error.response &&
+      error.response.status >= 400 &&
+      error.response.status <= 500
+    ) {
+      setError(error.response.data.message);
+    }
   }
-}, [error]);
+};
+
+
+  useEffect(() => {
+    if (error) {
+      setShowErrorMessage(true);
+      const timer = setTimeout(() => {
+        setShowErrorMessage(false);
+        setError("");
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
 
   return (
     <div className={`login_container ${En ? "Ar" : "rtl"}`}>
@@ -91,7 +101,7 @@ useEffect(() => {
               <label> {En ? "Password:" : "كلمة المرور"}</label>
               <>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -102,13 +112,23 @@ useEffect(() => {
                 </button>
               </>
             </div>
+            <div className="confirm-password">
+              <label> {En ? "Confirm Password:" : "تأكيد كلمة المرور"}</label>
+              <input
+                type={showPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                className="input pass"
+              />
+            </div>
             {error && <div className="error_msg">{error}</div>}
             <button type="submit" className="sign_btn">
               {En ? "Next " : "التالي"}
             </button>
             <p className="signup">
-              {En ? "Already have an account?" : "لديك حساب  بالفعل "}
-              <Link to="/login">{En ? "Login " : " سجل الدخول"}</Link>
+              {En ? "Already have an account?" : "لديك حساب بالفعل "}
+              <Link to="/login">{En ? "Login " : "سجل الدخول"}</Link>
             </p>
           </form>
         </div>

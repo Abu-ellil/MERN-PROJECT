@@ -1,24 +1,30 @@
-import express from "express"
-import cors from 'cors'
-import mongoose from 'mongoose'
-const app = express()
+import express from "express";
+import cors from "cors";
+import mongoose from "mongoose";
 
-import { userRouter } from "./routes/users.js"
-import { todosRouter } from "./routes/todos.js"
+const app = express();
 
-////DATABASE & PORT
-const URL = process.env.URL
-mongoose.connect(URL,{useNewUrlParser:true,useUnifiedTopology:true})
-const port = process.env.PORT || 8080
-////MIDDLERS
-app.use(express.json())
-app.use(cors())
-////
-app.use('/auth',userRouter)
-app.use('/todos',todosRouter)
-////
-app.get('/',(req,res)=>{
-    res.json({'heloo':"مرحبا بكم"})
-})
+app.use(express.json());
+app.use(cors());
 
-app.listen(port ,()=>{console.log(`LIVE ON ${port}...`);})
+// Import your routers
+import { userRouter } from "./routes/users.js";
+import { todosRouter } from "./routes/todos.js";
+
+// Database connection & port
+const URL = process.env.URL;
+mongoose.connect(URL, { useNewUrlParser: true, useUnifiedTopology: true });
+const port = process.env.PORT || 8080;
+
+// Mount your routers as middleware
+app.use("/auth", userRouter);
+app.use("/todos", todosRouter);
+
+// Root route
+app.get("/", (req, res) => {
+  res.json({ hello: "مرحبا بكم" });
+});
+
+app.listen(port, () => {
+  console.log(`LIVE ON ${port}...`);
+});

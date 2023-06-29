@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Notification from "./popup/Notification";
 import {
   BrowserRouter as Router,
   Routes,
@@ -26,6 +27,7 @@ const Landing = () => {
   const [activeTodos, setActiveTodos] = useState([]);
   const navigate = useNavigate();
   const [error, setError] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
   const [todo, setTodo] = useState({
     text: "",
     state: false,
@@ -47,12 +49,11 @@ const Landing = () => {
       setAr(parsedLanguage);
     }
   }, []);
-
-  useEffect(() => {
+useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/todos?userId=${userId}`
+          `https://mern-todo-project-my1v.onrender.com/todos?userId=${userId}`
         );
         localStorage.setItem("localList", JSON.stringify(response.data));
         setSelectedTab(response.data);
@@ -62,10 +63,9 @@ const Landing = () => {
         setError(true);
       }
     };
-
     fetchData();
-  }, [userId]);
-
+  }, []);
+  
   useEffect(() => {
     const storedList = localStorage.getItem("localList");
     if (storedList) {
@@ -79,7 +79,7 @@ const Landing = () => {
     const fetchCompletedTodos = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/todos/done/${userId}`
+          `https://mern-todo-project-my1v.onrender.com/todos/done/${userId}`
         );
         const doneTodos = response.data.done.filter((todo) => todo !== null);
 
@@ -103,7 +103,7 @@ const Landing = () => {
     const fetchDoneTodos = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/todos/done/ids/${userId}`
+          `https://mern-todo-project-my1v.onrender.com/todos/done/ids/${userId}`
         );
         const doneTodos = response.data.done.filter((todo) => todo !== null);
         setDoneTodos(doneTodos);
@@ -116,9 +116,11 @@ const Landing = () => {
   }, [activeTodos]);
 
   const addTodo = async (e) => {
+
     e.preventDefault();
+
     try {
-      await axios.post("http://localhost:8080/todos", todo);
+      await axios.post("https://mern-todo-project-my1v.onrender.com/todos", todo);
       alert("Todo added successfully");
       setTodo({
         text: "",
@@ -130,10 +132,14 @@ const Landing = () => {
       console.log(error);
     }
   };
-
+  /////////////////
+  /////////////////////////
+  /////////////////////////////////
+  /////////////
+const [notificationMessage, setNotificationMessage] = useState("");
   const addToDone = async (todoId) => {
     try {
-      await axios.put("http://localhost:8080/todos", {
+      await axios.put("https://mern-todo-project-my1v.onrender.com/todos", {
         todoId,
         userId,
       });
@@ -145,7 +151,7 @@ const Landing = () => {
       setActiveTodos((prevActiveTodos) =>
         prevActiveTodos.filter((todo) => todo._id !== todoId)
       );
-
+      setNotificationMessage("Todo marked as not done");
       console.log("Todo marked as done");
     } catch (error) {
       setError(true);
@@ -156,12 +162,12 @@ const Landing = () => {
   const removeFromDone = async (todoId) => {
     try {
       await axios.delete(
-        `http://localhost:8080/todos/done/${userId}/${todoId}`
+        `https://mern-todo-project-my1v.onrender.com/todos/done/${userId}/${todoId}`
       );
       setDoneTodos((prevDoneTodos) =>
         prevDoneTodos.filter((id) => id !== todoId)
       );
-      console.log("Todo marked as not done");
+      setShowPopup(true);
     } catch (error) {
       setError(true);
       console.log(error);
@@ -181,7 +187,7 @@ const Landing = () => {
 
   const deleteCompletedTodos = async () => {
     try {
-      await axios.delete(`http://localhost:8080/todos/done/${userId}`);
+      await axios.delete(`https://mern-todo-project-my1v.onrender.com/todos/done/${userId}`);
       setCompletedTodos([]);
       console.log("Completed todos cleared");
     } catch (error) {
@@ -194,12 +200,12 @@ const Landing = () => {
 
   const deleteTodoItem = async (todoId) => {
     try {
-      await axios.delete(`http://localhost:8080/todos/${todoId}`);
+      await axios.delete(`https://mern-todo-project-my1v.onrender.com/todos/${todoId}`);
       setTodosList((prevTodosList) =>
         prevTodosList.filter((todo) => todo._id !== todoId)
       );
-      console.log("Todo deleted successfully");
-      window.location.reload();
+      alert("Todo deleted successfully");
+      // window.location.reload();
     } catch (error) {
       setError(true);
       console.log(error);
@@ -238,7 +244,11 @@ const Landing = () => {
           : `light-mode main ${En ? "Ar" : "rtl"}`
       }
     >
+      {notificationMessage && (
+        <Notification message={notificationMessage} />)}
+
       <div className="main-container">
+        
         <Navbar
           modeToggel={toggelMode}
           toggleLang={toggelLang}
@@ -290,7 +300,7 @@ const Landing = () => {
                     <ErrorPage />
                   ) : (
                     selectedTab.map((todo) => (
-                      <div className="list-item" key={todo._id+2}>
+                      <div className="list-item" key={todo._id + 2}>
                         <div className="check-todo">
                           <label className="checkbox-container">
                             <input
@@ -307,7 +317,7 @@ const Landing = () => {
                             <span className="checkmark"></span>
                           </label>
                           <li
-                            key={todo._id +1}
+                            key={todo._id + 1}
                             className={
                               doneTodos.includes(todo._id)
                                 ? "done item"
@@ -330,7 +340,7 @@ const Landing = () => {
               </div>
             </div>
 
-            <div className="todo-footer-links">
+            <div className="todo-footer-links big">
               <span className="not-done">
                 {activeTodos.length} {En ? "items left" : "مهام باقية"}
               </span>
@@ -363,6 +373,48 @@ const Landing = () => {
                   </div>
                 </>
               )}
+            </div> 
+            
+            
+             <div className="com-not">
+                 <span className="not-done">
+                  {activeTodos.length} {En ? "items left" : "مهام باقية"}
+                </span>
+              
+                {completedTodos.length > 0 && (
+                  <>
+                    <div className="clear-com" onClick={deleteCompletedTodos}>
+                      {En ? "Clear Completed" : "مسح المنتهي"}
+                    </div>
+                  </>
+                )} 
+              </div>
+
+            <div className="todo-footer-links mini">
+            
+
+              <div className="links">
+                <div
+                  onClick={() => setSelectedTab(todosList)}
+                  className={selectedTab === todosList ? "a active" : "a"}
+                >
+                  {En ? "All" : " الكل"}
+                </div>
+                <div
+                  onClick={() => setSelectedTab(activeTodos)}
+                  className={
+                    selectedTab === activeTodos ? "a mid active" : "a mid"
+                  }
+                >
+                  {En ? "Active" : "نشط"}
+                </div>
+                <div
+                  onClick={() => setSelectedTab(completedTodos)}
+                  className={selectedTab === completedTodos ? "a active" : "a"}
+                >
+                  {En ? "Completed" : "مكتمل"}
+                </div>
+              </div>
             </div>
           </div>
         )}

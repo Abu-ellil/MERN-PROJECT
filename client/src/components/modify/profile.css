@@ -1,3 +1,5 @@
+/* Styles for all screens */
+
 .profile_container {
   position: absolute;
   top: 16%;
@@ -8,6 +10,7 @@
   gap: 1rem;
   width: 60%;
 }
+
 .profile_container h1 {
   font-size: 1.5rem;
   text-align: center;
@@ -17,17 +20,20 @@
   border-radius: 5px;
   width: 60%;
 }
+
 .profile_form_container {
   width: 60%;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
 .pofile {
   width: 100%;
   display: flex;
   padding-top: 1rem;
 }
+
 .profile-form {
   display: flex;
   flex-direction: column;
@@ -36,6 +42,7 @@
   background-color: #fff;
   width: 100%;
 }
+
 .success_msg {
   border-radius: 9px;
   padding: 1rem;
@@ -43,6 +50,7 @@
   background-color: rgb(25, 133, 70);
   color: #fff;
 }
+
 .p-input {
   font-size: 1.1rem;
   display: flex;
@@ -50,6 +58,7 @@
   width: 100%;
   color: var(--secondary-color);
 }
+
 .pinput {
   outline: none;
   border: none;
@@ -60,7 +69,56 @@
   margin: 5px 0;
   font-size: 14px;
 }
+
 .password {
   position: relative;
   width: 100%;
+}
+
+/* Styles for smaller screens */
+
+@media (max-width: 768px) {
+  .profile_container {
+    width: 80%;
+  }
+
+  .profile_container h1 {
+    font-size: 1.2rem;
+    width: 80%;
+  }
+
+  .profile_form_container {
+    width: 80%;
+  }
+
+  .profile-form {
+    padding: 1.5rem;
+  }
+
+  .pinput {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile_container {
+    width: 90%;
+  }
+
+  .profile_container h1 {
+    font-size: 1rem;
+    width: 90%;
+  }
+
+  .profile_form_container {
+    width: 90%;
+  }
+
+  .profile-form {
+    padding: 1rem;
+  }
+
+  .pinput {
+    font-size: 10px;
+  }
 }

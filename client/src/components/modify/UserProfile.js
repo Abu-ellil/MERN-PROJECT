@@ -19,7 +19,7 @@ const UserProfile = ({ profileToggle }) => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/auth/${userId}`
+          `https://mern-todo-project-my1v.onrender.com/auth/${userId}`
         );
         console.log(response);
         const { email, username, phone, birthYear } = response.data.user;
@@ -40,7 +40,7 @@ const UserProfile = ({ profileToggle }) => {
 
     try {
       const response = await axios.patch(
-        `http://localhost:8080/auth/register/${userId}`,
+        `https://mern-todo-project-my1v.onrender.com/auth/register/${userId}`,
         {
           email,
           password,

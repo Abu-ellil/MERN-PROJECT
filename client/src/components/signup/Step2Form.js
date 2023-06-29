@@ -17,12 +17,15 @@ const Step2Form = ({ handleComplete, userId,toggleLang,en }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`http://localhost:8080/auth/register/${userId}`, {
-        username,
-        phone,
-        birthYear,
-        userId,
-      });
+      await axios.post(
+        `https://mern-todo-project-my1v.onrender.com/auth/register/${userId}`,
+        {
+          username,
+          phone,
+          birthYear,
+          userId,
+        }
+      );
       await handleComplete();
     } catch (error) {
       alert(error.response.data.message);
