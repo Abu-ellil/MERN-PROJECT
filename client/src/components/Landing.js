@@ -34,25 +34,14 @@ const Landing = () => {
   const [todosList, setTodosList] = useState([]);
   const [selectedTab, setSelectedTab] = useState([todosList]);
   const mode = localStorage.getItem('darkMode')
-   
 
-const toggelMode = (e) => {
-  e.preventDefault();
-  localStorage.setItem("darkMode", String(!isDarkMode));
-  setIsDarkMode(!isDarkMode);
-};
+
 
 useEffect(() => {
   const mode = localStorage.getItem("darkMode");
   setIsDarkMode(mode === "true");
 }, []);
 
- const toggelLang = (e) => {
-   e.preventDefault();
-   const updatedEn = !En;
-   localStorage.setItem("language", JSON.stringify(updatedEn));
-   setAr(updatedEn);
- };
 
  useEffect(() => {
    const storedLanguage = localStorage.getItem("language");
@@ -64,13 +53,7 @@ useEffect(() => {
 
 
 
-  const changeHandler = (e) => {
-    e.preventDefault();
-    const { name, value } = e.target;
-    setTodo({ ...todo, [name]: value });
-    e.target = "";
-  };
-
+ 
   const addTodo = async (e) => {
     e.preventDefault();
     try {
@@ -197,7 +180,7 @@ useEffect(() => {
       setSelectedTab(parsedList);
       setTodosList(parsedList);
     }
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
      const fetchCompletedTodos = async () => {
@@ -222,7 +205,7 @@ useEffect(() => {
 
      fetchCompletedTodos();
    
-  }, [userId, doneTodos,todosList,completedTodos,activeTodos]);
+  }, [userId, doneTodos,completedTodos,activeTodos]);
 
   useEffect(() => {
     const fetchDoneTodos = async () => {
@@ -240,6 +223,29 @@ useEffect(() => {
     fetchDoneTodos();
   }, [activeTodos]);
 
+     
+ const toggelLang = (e) => {
+   e.preventDefault();
+   const updatedEn = !En;
+   localStorage.setItem("language", JSON.stringify(updatedEn));
+   setAr(updatedEn);
+ };
+
+const toggelMode = (e) => {
+  e.preventDefault();
+  localStorage.setItem("darkMode", String(!isDarkMode));
+  setIsDarkMode(!isDarkMode);
+};
+const changeHandler = (e) => {
+  e.preventDefault();
+  const { name, value } = e.target;
+  setTodo({ ...todo, [name]: value });
+  e.target = "";
+};
+
+// **************
+// **************
+// **************
   return (
     <div
       className={

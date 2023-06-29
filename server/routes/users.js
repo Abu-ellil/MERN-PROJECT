@@ -6,7 +6,7 @@ import { UserModel } from "../models/user.js";
 const router = express.Router();
 
 
-///register 
+///register
 router.post("/register", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -16,14 +16,14 @@ router.post("/register", async (req, res) => {
         .status(409)
         .send({ message: "User with this email already exists!" });
     }
-    const cryptPass = await bcrypt.hash(password, 10);
+    const cryptPass = await bcrypt.hash(password, 10); // Hashing the password
     const newUser = new UserModel({
       email,
       password: cryptPass,
       isRegistrationComplete: false,
     });
     await newUser.save();
-
+console.log(newUser);
     const userId = newUser._id;
 
     res.status(201).send({

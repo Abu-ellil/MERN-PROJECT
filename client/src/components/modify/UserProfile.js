@@ -59,7 +59,8 @@ const UserProfile = ({ profileToggle }) => {
     }
   };
 
-  const handleTogglePassword = () => {
+  const handleTogglePassword = (e) => {
+    e.preventDefault()
     setShowPassword(!showPassword);
   };
 
