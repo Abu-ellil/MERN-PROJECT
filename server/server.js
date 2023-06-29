@@ -4,8 +4,6 @@ import mongoose from "mongoose";
 
 const app = express();
 
-app.use(express.json());
-app.use(cors());
 
 // Import your routers
 import { userRouter } from "./routes/users.js";
@@ -16,6 +14,8 @@ const URL = process.env.URL;
 mongoose.connect(URL, { useNewUrlParser: true, useUnifiedTopology: true });
 const port = process.env.PORT || 8080;
 
+app.use(express.json());
+app.use(cors());
 // Mount your routers as middleware
 app.use("/auth", userRouter);
 app.use("/todos", todosRouter);

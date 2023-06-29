@@ -66,14 +66,7 @@ useEffect(() => {
     fetchData();
   }, []);
   
-  useEffect(() => {
-    const storedList = localStorage.getItem("localList");
-    if (storedList) {
-      const parsedList = JSON.parse(storedList);
-      setSelectedTab(parsedList);
-      setTodosList(parsedList);
-    }
-  }, [userId]);
+
 
   useEffect(() => {
     const fetchCompletedTodos = async () => {
@@ -97,7 +90,7 @@ useEffect(() => {
     };
 
     fetchCompletedTodos();
-  }, [userId, doneTodos, completedTodos, activeTodos]);
+  }, [userId, doneTodos, ]);
 
   useEffect(() => {
     const fetchDoneTodos = async () => {
@@ -107,6 +100,7 @@ useEffect(() => {
         );
         const doneTodos = response.data.done.filter((todo) => todo !== null);
         setDoneTodos(doneTodos);
+        
       } catch (error) {
         console.error(error);
         setError(true);
@@ -190,6 +184,7 @@ const [notificationMessage, setNotificationMessage] = useState("");
       await axios.delete(`https://mern-todo-project-my1v.onrender.com/todos/done/${userId}`);
       setCompletedTodos([]);
       console.log("Completed todos cleared");
+      setNotificationMessage("Completed todos cleared");
     } catch (error) {
       setError(true);
       console.log(error);
@@ -204,6 +199,8 @@ const [notificationMessage, setNotificationMessage] = useState("");
       setTodosList((prevTodosList) =>
         prevTodosList.filter((todo) => todo._id !== todoId)
       );
+      
+      setNotificationMessage("Completed todos cleared");
       alert("Todo deleted successfully");
       // window.location.reload();
     } catch (error) {
