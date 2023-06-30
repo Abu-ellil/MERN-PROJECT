@@ -186,6 +186,67 @@
 
 
 
+
+
+
+
+
+.pop-up {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 6rem;
+  left: 1rem;
+}
+
+.slide-container {
+  width: 400px;
+  height: 100px;
+  overflow: hidden;
+  position: relative;
+}
+
+.slide-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  background-color: var(--primary-color);
+  height: 100px;
+  width: 200px;
+  border-radius: 5px;
+  border: #eee solid 1px;
+  box-shadow: #ff00f2 0px 0px 13px;
+  animation: slideAnimation 1s ;
+  /* opacity: 0; */
+}
+
+@keyframes slideAnimation {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  50% {
+    transform: translateX(100px);
+     opacity: 1; 
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
 /* ========= */
 
 @media screen and (max-width: 1200px) {

@@ -2,7 +2,8 @@ import React from "react";
 import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
 
-const DropdownWindow = ({ isOpen, onClose, profile }) => {
+const DropdownWindow = ({ isOpen, onClose, profile,en }) => {
+  
   const userName = window.localStorage.getItem("username");
   const [cookies, setCookies] = useCookies(["access_token"]);
   const logout = () => {
@@ -19,10 +20,12 @@ const DropdownWindow = ({ isOpen, onClose, profile }) => {
           ❌
         </button>
         <div className="drop-inside">
-          <h1>hi {userName}</h1>
+          <h1>
+            {en ? "hi" : "مرحبا يا "} {userName}
+          </h1>
           <div className="btns">
             <button className="btn drop-btn-in" onClick={profile}>
-              Modify User info
+              {en ? "Modify User info" : "تعديل بياناتك"}
             </button>
             {!cookies.access_token ? (
               <button className="btn drop-btn-out" onClick={login}>
@@ -30,7 +33,7 @@ const DropdownWindow = ({ isOpen, onClose, profile }) => {
               </button>
             ) : (
               <button className="btn drop-btn-out" onClick={logout}>
-                {true ? "LogOut" : "تسجيل خروج"}
+                {en ? "LogOut" : "تسجيل خروج"}
               </button>
             )}
           </div>

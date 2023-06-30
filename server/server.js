@@ -10,8 +10,9 @@ import { userRouter } from "./routes/users.js";
 import { todosRouter } from "./routes/todos.js";
 
 // Database connection & port
-const URL = process.env.URL;
-mongoose.connect(URL, { useNewUrlParser: true, useUnifiedTopology: true });
+// const URL = process.env.URL;
+mongoose.connect('mongodb+srv://mrabuellil:mrabuellil@mern-todo.ff0xnlu.mongodb.net/mern-todo?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
+// "mongodb+srv://mrabuellil:mrabuellil@mern-todo.ff0xnlu.mongodb.net/mern-todo?retryWrites=true&w=majority";
 const port = process.env.PORT || 8080;
 
 app.use(express.json());
@@ -28,3 +29,4 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`LIVE ON ${port}...`);
 });
+ 

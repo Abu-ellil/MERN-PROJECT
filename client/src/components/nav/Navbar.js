@@ -18,7 +18,7 @@ export const Navbar = ({ modeToggel, toggleLang, en, mode, profile }) => {
     <div className="nav">
       <div className="nav-logo-txt">
         <img className="logo-svg" src={logo} alt="your todo logo" />
-        Your Notes
+        {en ? "Your Notes" : "مهام"}
       </div>
       <div className="nav-links">
         <button className="nav-btn lang" onClick={toggleLang}>
@@ -27,7 +27,7 @@ export const Navbar = ({ modeToggel, toggleLang, en, mode, profile }) => {
         <button className="nav-btn " onClick={modeToggel}>
           <img src={mode ? night : light} alt="toggle mode icon" />
         </button>
-        <DropdownContainer profile={profile} />
+        <DropdownContainer profile={profile} en={en} />
       </div>
     </div>
   );

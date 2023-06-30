@@ -1,5 +1,9 @@
+import backgroundImage from "../assets/main-cover.png";
 import React, { useState, useEffect } from "react";
-import Notification from "./popup/Notification";
+import night from "../assets/Combined Shape.svg";
+import { useCookies } from "react-cookie";
+import { Navbar } from "./nav/Navbar";
+import axios from "axios";
 import {
   BrowserRouter as Router,
   Routes,
@@ -7,14 +11,8 @@ import {
   Link,
   useNavigate,
 } from "react-router-dom";
-import { useCookies } from "react-cookie";
-import axios from "axios";
-import { Navbar } from "./nav/Navbar";
-import UserProfile from "./modify/UserProfile";
-import ErrorPage from "../errors/ErrorPage";
-import backgroundImage from "../assets/main-cover.png";
-import night from "../assets/Combined Shape.svg";
 import "./landing.css";
+import UserProfile from "./modify/UserProfile";
 
 const Landing = () => {
   const userId = window.localStorage.getItem("userId");
@@ -25,9 +23,10 @@ const Landing = () => {
   const [En, setAr] = useState(true);
   const [completedTodos, setCompletedTodos] = useState([]);
   const [activeTodos, setActiveTodos] = useState([]);
-  const navigate = useNavigate();
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const [showPopup, setShowPopup] = useState(false);
+  const navigate = useNavigate();
   const [todo, setTodo] = useState({
     text: "",
     state: false,
@@ -49,107 +48,64 @@ const Landing = () => {
       setAr(parsedLanguage);
     }
   }, []);
-useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `https://mern-todo-project-my1v.onrender.com/todos?userId=${userId}`
-        );
-        localStorage.setItem("localList", JSON.stringify(response.data));
-        setSelectedTab(response.data);
-        setTodosList(response.data);
-      } catch (error) {
-        console.error(error);
-        setError(true);
-      }
-    };
-    fetchData();
-  }, []);
-  
 
 
-  useEffect(() => {
-    const fetchCompletedTodos = async () => {
-      try {
-        const response = await axios.get(
-          `https://mern-todo-project-my1v.onrender.com/todos/done/${userId}`
-        );
-        const doneTodos = response.data.done.filter((todo) => todo !== null);
+ const toggelLang = (e) => {
+   e.preventDefault();
+   const updatedEn = !En;
+   localStorage.setItem("language", JSON.stringify(updatedEn));
+   setAr(updatedEn);
+ };
 
-        const notDoneTodos = todosList.filter(
-          (todo) =>
-            !doneTodos.some((completedTodo) => completedTodo._id === todo._id)
-        );
+ const toggelMode = (e) => {
+   e.preventDefault();
+   localStorage.setItem("darkMode", String(!isDarkMode));
+   setIsDarkMode(!isDarkMode);
+ };
 
-        setCompletedTodos(doneTodos);
-        setActiveTodos(notDoneTodos);
-      } catch (error) {
-        setError(true);
-        console.error(error);
-      }
-    };
-
-    fetchCompletedTodos();
-  }, [userId, doneTodos, ]);
-
-  useEffect(() => {
-    const fetchDoneTodos = async () => {
-      try {
-        const response = await axios.get(
-          `https://mern-todo-project-my1v.onrender.com/todos/done/ids/${userId}`
-        );
-        const doneTodos = response.data.done.filter((todo) => todo !== null);
-        setDoneTodos(doneTodos);
-        
-      } catch (error) {
-        console.error(error);
-        setError(true);
-      }
-    };
-    fetchDoneTodos();
-  }, [activeTodos]);
+  const changeHandler = (e) => {
+    e.preventDefault();
+    const { name, value } = e.target;
+    setTodo({ ...todo, [name]: value });
+    e.target = "";
+  };
 
   const addTodo = async (e) => {
-
     e.preventDefault();
-
     try {
-      await axios.post("https://mern-todo-project-my1v.onrender.com/todos", todo);
-      alert("Todo added successfully");
+      await axios.post(
+        "https://mern-todo-project-my1v.onrender.com/todos",
+        todo
+      );
+      // alert("Todo added successfully");
+      setMessage("Todo added successfully");
+      setShowPopup(true);
+      setTimeout(() => {
+        setMessage(null);
+        setShowPopup(false);
+      }, 3000);
       setTodo({
         text: "",
         state: false,
         userOwner: userId,
       });
     } catch (error) {
-      setError(true);
+      setError(error);
+      setTimeout(() => {
+        setError(null);
+      }, 3000);
       console.log(error);
-    }
-  };
-  /////////////////
-  /////////////////////////
-  /////////////////////////////////
-  /////////////
-const [notificationMessage, setNotificationMessage] = useState("");
-  const addToDone = async (todoId) => {
-    try {
-      await axios.put("https://mern-todo-project-my1v.onrender.com/todos", {
-        todoId,
-        userId,
-      });
-      const completedTodo = activeTodos.find((todo) => todo._id === todoId);
-      setCompletedTodos((prevCompletedTodos) => [
-        ...prevCompletedTodos,
-        completedTodo,
-      ]);
-      setActiveTodos((prevActiveTodos) =>
-        prevActiveTodos.filter((todo) => todo._id !== todoId)
-      );
-      setNotificationMessage("Todo marked as not done");
-      console.log("Todo marked as done");
-    } catch (error) {
-      setError(true);
-      console.log(error);
+      setMessage("Todo added successfully");
+      setShowPopup(true);
+      setTimeout(() => {
+        setMessage(null);
+        setShowPopup(false);
+      }, 3000);
+      setError("Todo added successfully");
+
+      setTimeout(() => {
+        setError(null);
+      }, 3000);
     }
   };
 
@@ -161,9 +117,19 @@ const [notificationMessage, setNotificationMessage] = useState("");
       setDoneTodos((prevDoneTodos) =>
         prevDoneTodos.filter((id) => id !== todoId)
       );
+      console.log("Todo marked as not done");
+      setMessage("Todo marked as Active");
       setShowPopup(true);
+      setTimeout(() => {
+        setMessage(null);
+        setShowPopup(false);
+      }, 3000);
     } catch (error) {
-      setError(true);
+      setError(error);
+
+      setTimeout(() => {
+        setError(null);
+      }, 3000);
       console.log(error);
     }
   };
@@ -181,12 +147,42 @@ const [notificationMessage, setNotificationMessage] = useState("");
 
   const deleteCompletedTodos = async () => {
     try {
-      await axios.delete(`https://mern-todo-project-my1v.onrender.com/todos/done/${userId}`);
+      await axios.delete(
+        `https://mern-todo-project-my1v.onrender.com/todos/done/${userId}`
+      );
       setCompletedTodos([]);
       console.log("Completed todos cleared");
-      setNotificationMessage("Completed todos cleared");
+      setMessage("Completed todos cleared");
+      setTimeout(() => {
+        setMessage(null);
+      }, 3000);
     } catch (error) {
-      setError(true);
+      console.log(error);
+    }
+  };
+
+  const addToDone = async (todoId) => {
+    try {
+      // Make API call to mark the todo as done
+      await axios.put("https://mern-todo-project-my1v.onrender.com/todos", {
+        todoId,
+        userId,
+      });
+      const completedTodo = activeTodos.find((todo) => todo._id === todoId);
+      setCompletedTodos((prevCompletedTodos) => [
+        ...prevCompletedTodos,
+        completedTodo,
+      ]);
+      setActiveTodos((prevActiveTodos) =>
+        prevActiveTodos.filter((todo) => todo._id !== todoId)
+      );
+      console.log("Todo marked as done");
+
+      setMessage("Todo marked as done");
+      setTimeout(() => {
+        setMessage(null);
+      }, 3000);
+    } catch (error) {
       console.log(error);
     }
   };
@@ -195,16 +191,23 @@ const [notificationMessage, setNotificationMessage] = useState("");
 
   const deleteTodoItem = async (todoId) => {
     try {
-      await axios.delete(`https://mern-todo-project-my1v.onrender.com/todos/${todoId}`);
+      await axios.delete(
+        `https://mern-todo-project-my1v.onrender.com/todos/${todoId}`
+      );
       setTodosList((prevTodosList) =>
         prevTodosList.filter((todo) => todo._id !== todoId)
       );
-      
-      setNotificationMessage("Completed todos cleared");
-      alert("Todo deleted successfully");
-      // window.location.reload();
+      setMessage("Todo deleted successfully");
+      setTimeout(() => {
+        setMessage(null);
+      }, 3000);
+      console.log("Todo deleted successfully");
+      window.location.reload();
     } catch (error) {
-      setError(true);
+      setError(error);
+      setTimeout(() => {
+        setError(null);
+      }, 3000);
       console.log(error);
     }
   };
@@ -213,25 +216,76 @@ const [notificationMessage, setNotificationMessage] = useState("");
     setProfile(!profile);
   };
 
-  const toggelLang = (e) => {
-    e.preventDefault();
-    const updatedEn = !En;
-    localStorage.setItem("language", JSON.stringify(updatedEn));
-    setAr(updatedEn);
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `https://mern-todo-project-my1v.onrender.com/todos?userId=${userId}`
+        );
+        setSelectedTab(response.data);
+        setTodosList(response.data);
+      } catch (error) {
+        console.error(error);
+        setError(error);
+        setTimeout(() => {
+          setError(null);
+        }, 3000);
+      }
+    };
 
-  const toggelMode = (e) => {
-    e.preventDefault();
-    localStorage.setItem("darkMode", String(!isDarkMode));
-    setIsDarkMode(!isDarkMode);
-  };
+    fetchData();
+  }, [userId]);
 
-  const changeHandler = (e) => {
-    e.preventDefault();
-    const { name, value } = e.target;
-    setTodo({ ...todo, [name]: value });
-    e.target = "";
-  };
+  useEffect(() => {
+    const fetchCompletedTodos = async () => {
+      try {
+        const response = await axios.get(
+          `https://mern-todo-project-my1v.onrender.com/todos/done/${userId}`
+        );
+        const doneTodos = response.data.done.filter((todo) => todo !== null);
+
+        const notDoneTodos = todosList.filter(
+          (todo) =>
+            !doneTodos.some((completedTodo) => completedTodo._id === todo._id)
+        );
+
+        setCompletedTodos(doneTodos);
+        setActiveTodos(notDoneTodos);
+      } catch (error) {
+        setError(error);
+        setTimeout(() => {
+          setError(null);
+        }, 3000);
+        console.error(error);
+        setError(error);
+        setTimeout(() => {
+          setError(null);
+        }, 3000);
+      }
+    };
+
+    fetchCompletedTodos();
+  }, [userId, doneTodos, todosList, completedTodos, activeTodos]);
+
+  useEffect(() => {
+    const fetchDoneTodos = async () => {
+      try {
+        const response = await axios.get(
+          `https://mern-todo-project-my1v.onrender.com/todos/done/ids/${userId}`
+        );
+        const doneTodos = response.data.done.filter((todo) => todo !== null);
+        setDoneTodos(doneTodos);
+      } catch (error) {
+        setError(error);
+        setTimeout(() => {
+          setError(null);
+        }, 3000);
+        console.error(error);
+      }
+    };
+
+    fetchDoneTodos();
+  }, [activeTodos]);
 
   return (
     <div
@@ -241,11 +295,7 @@ const [notificationMessage, setNotificationMessage] = useState("");
           : `light-mode main ${En ? "Ar" : "rtl"}`
       }
     >
-      {notificationMessage && (
-        <Notification message={notificationMessage} />)}
-
       <div className="main-container">
-        
         <Navbar
           modeToggel={toggelMode}
           toggleLang={toggelLang}
@@ -253,6 +303,7 @@ const [notificationMessage, setNotificationMessage] = useState("");
           en={En}
           mode={!isDarkMode}
         />
+
         <div
           style={{
             backgroundImage: `url(${backgroundImage})`,
@@ -261,7 +312,18 @@ const [notificationMessage, setNotificationMessage] = useState("");
             width: "100%",
             height: "25vh",
           }}
-        ></div>
+        >
+          {message && (
+            <div>
+              <div className="pop-up">
+                <div className="slide-container">
+                  <div className="slide-content">{message}</div>
+                </div>
+              </div>
+            </div>
+          )}
+          {error && <div className="error_msg pop-up">{error}</div>}
+        </div>
 
         {profile ? (
           <UserProfile profileToggle={profileToggle} />
@@ -290,52 +352,47 @@ const [notificationMessage, setNotificationMessage] = useState("");
                 />
               </form>
             </div>
+            {/* ************************* */}
             <div className="todos-pages">
               <div className="todo-list">
                 <ul className="todo-ul">
-                  {error ? (
-                    <ErrorPage />
-                  ) : (
-                    selectedTab.map((todo) => (
-                      <div className="list-item" key={todo._id + 2}>
-                        <div className="check-todo">
-                          <label className="checkbox-container">
-                            <input
-                              type="checkbox"
-                              checked={isDone(todo._id)}
-                              onChange={(e) => {
-                                if (e.target.checked) {
-                                  addToDone(todo._id);
-                                } else {
-                                  removeFromDone(todo._id);
-                                }
-                              }}
-                            />
-                            <span className="checkmark"></span>
-                          </label>
-                          <li
-                            key={todo._id + 1}
-                            className={
-                              doneTodos.includes(todo._id)
-                                ? "done item"
-                                : "item"
-                            }
-                          >
-                            {todo.text}
-                          </li>
-                        </div>
-                        <button
-                          className="delete-button"
-                          onClick={() => deleteTodoItem(todo._id)}
-                        >
-                          X
-                        </button>
+                  {/* <AllTodos/> */}
+
+                  {selectedTab.map((todo) => (
+                    <div className="list-item" key={todo._id}>
+                      <div className="check-todo">
+                        <label className="checkbox-container">
+                          <input
+                            type="checkbox"
+                            checked={isDone(todo._id)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                addToDone(todo._id);
+                              } else {
+                                removeFromDone(todo._id);
+                              }
+                            }}
+                          />
+                          <span className="checkmark"></span>
+                        </label>
+                        <li className="item" key={todo._id}>
+                          {todo.text}
+                        </li>
                       </div>
-                    ))
-                  )}
+                      <button
+                        className="delete-button"
+                        onClick={() => deleteTodoItem(todo._id)}
+                      >
+                        X
+                      </button>
+                    </div>
+                  ))}
+
+                  {/* <AllTodos/> */}
                 </ul>
               </div>
             </div>
+            {/* ************************* */}
 
             <div className="todo-footer-links big">
               <span className="not-done">
@@ -370,26 +427,23 @@ const [notificationMessage, setNotificationMessage] = useState("");
                   </div>
                 </>
               )}
-            </div> 
-            
-            
-             <div className="com-not">
-                 <span className="not-done">
-                  {activeTodos.length} {En ? "items left" : "مهام باقية"}
-                </span>
-              
-                {completedTodos.length > 0 && (
-                  <>
-                    <div className="clear-com" onClick={deleteCompletedTodos}>
-                      {En ? "Clear Completed" : "مسح المنتهي"}
-                    </div>
-                  </>
-                )} 
-              </div>
+            </div>
+
+            <div className="com-not">
+              <span className="not-done">
+                {activeTodos.length} {En ? "items left" : "مهام باقية"}
+              </span>
+
+              {completedTodos.length > 0 && (
+                <>
+                  <div className="clear-com" onClick={deleteCompletedTodos}>
+                    {En ? "Clear Completed" : "مسح المنتهي"}
+                  </div>
+                </>
+              )}
+            </div>
 
             <div className="todo-footer-links mini">
-            
-
               <div className="links">
                 <div
                   onClick={() => setSelectedTab(todosList)}
