@@ -18,7 +18,7 @@ export const Navbar = ({ modeToggel, toggleLang, en, mode, profile }) => {
     <div className="nav">
       <div className="nav-logo-txt">
         <img className="logo-svg" src={logo} alt="your todo logo" />
-        {en ? "Your Notes" : "مهام"}
+        {en ? "Your Notes" : "تطبيق مهامي"}
       </div>
       <div className="nav-links">
         <button className="nav-btn lang" onClick={toggleLang}>
