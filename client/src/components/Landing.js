@@ -37,9 +37,7 @@ const Landing = () => {
     state: false,
     userOwner: userId,
   });
-  const [todosList, setTodosList] = useState([
-    { text: "لا يوجد مهام قم باضافة واحدة." },
-  ]);
+  const [todosList, setTodosList] = useState([]);
   const [selectedTab, setSelectedTab] = useState([todosList]);
   const mode = localStorage.getItem("darkMode");
 
@@ -95,7 +93,7 @@ const Landing = () => {
     };
 
     fetchData();
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     const fetchCompletedTodos = async () => {
@@ -144,7 +142,7 @@ const Landing = () => {
     };
 
     fetchDoneTodos();
-  }, [doneTodos]);
+  }, [completedTodos]);
 
   const addTodo = async (e) => {
     e.preventDefault();
@@ -155,11 +153,13 @@ const Landing = () => {
         );
       }
 
-      await axios.post(
-        "https://mern-todo-project-my1v.onrender.com/todos",
+     const response =  await axios.post(
+       "https://mern-todo-project-my1v.onrender.com/todos",
         todo
       );
-
+console.log(response);
+setCompletedTodos(response.data)
+console.log(selectedTab);
       setMessage(En ? "Todo added successfully" : "تمت إضافة المهمة بنجاح");
       setShowPopup(true);
       setTimeout(() => {

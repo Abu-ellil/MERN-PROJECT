@@ -189,33 +189,37 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  top: 6rem;
-  left: 1rem;
+  position: fixed;
+  top:0;
+  right: .5rem;
+  width: 100%;
+  z-index: 9999; 
+  
 }
 .rtl .pop-up {
-  right: 10rem;
-  top: .5rem;
+  right: 5rem;
+  top: 1rem;
 }
 
 .slide-container {
   width: 400px;
   height: 100px;
-  overflow: hidden;
+  /* overflow: hidden; */
   position: relative;
 }
 
 .slide-content {
+  
   display: flex;
   justify-content: center;
   align-items: center;
   color: #fff;
   background-color: var(--primary-color);
   height: 100px;
-  width: 200px;
+  width: 250px;
   border-radius: 5px;
   border: #eee solid 1px;
-  box-shadow: #ff00f2 0px 0px 13px;
+  box-shadow: #ff00f2 0px 1px 13px;
   animation: slideAnimation 1s ;
   /* opacity: 0; */
 }
