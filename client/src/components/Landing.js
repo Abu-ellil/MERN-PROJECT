@@ -114,14 +114,12 @@ const Landing = () => {
         setTimeout(() => {
           setError(null);
         }, 2000);
-        setTimeout(() => {
-          setError(null);
-        }, 2000);
+        console.log(error);
       }
     };
 
     fetchCompletedTodos();
-  }, [completedTodos]);
+  }, [todosList, userId]);
 
   useEffect(() => {
     const fetchDoneTodos = async () => {
@@ -142,24 +140,23 @@ const Landing = () => {
     };
 
     fetchDoneTodos();
-  }, [completedTodos]);
+  }, [doneTodos, userId]);
 
   const addTodo = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     try {
       if (todo.text.trim() === "") {
         throw new Error(
           En ? "You have to write something" : "لابد من كتابة شيء"
         );
       }
-
-     const response =  await axios.post(
-       "https://mern-todo-project-my1v.onrender.com/todos",
+      const response = await axios.post(
+        "https://mern-todo-project-my1v.onrender.com/todos",
         todo
       );
-console.log(response);
-setCompletedTodos(response.data)
-console.log(selectedTab);
+      setTodosList((prevTodosList) => [...prevTodosList, response.data]);
+      setCompletedTodos(response.data);
+      window.location.reload();
       setMessage(En ? "Todo added successfully" : "تمت إضافة المهمة بنجاح");
       setShowPopup(true);
       setTimeout(() => {
@@ -242,7 +239,7 @@ console.log(selectedTab);
 
   const addToDone = async (todoId) => {
     try {
-      // Make API call to mark the todo as done
+     
       await axios.put("https://mern-todo-project-my1v.onrender.com/todos", {
         todoId,
         userId,
@@ -252,11 +249,12 @@ console.log(selectedTab);
         ...prevCompletedTodos,
         completedTodo,
       ]);
+     
       setActiveTodos((prevActiveTodos) =>
         prevActiveTodos.filter((todo) => todo._id !== todoId)
       );
       console.log("Todo marked as done");
-
+ 
       setMessage(En ? "Todo marked as done" : "تم الاضافة للمكتمل");
       setTimeout(() => {
         setMessage(null);
@@ -270,17 +268,20 @@ console.log(selectedTab);
 
   const deleteTodoItem = async (todoId) => {
     try {
-      await axios.delete(
+      const response = await axios.delete(
         `https://mern-todo-project-my1v.onrender.com/todos/${todoId}`
       );
-      setTodosList((prevTodosList) =>
-        prevTodosList.filter((todo) => todo._id !== todoId)
+      console.log(response);
+        setTodosList((prevTodosList) =>
+      prevTodosList.filter((todo) => todo._id !== todoId)
+  
       );
       setMessage(En ? "Todo deleted successfully" : "تم المسح بنجاح");
       setTimeout(() => {
         setMessage(null);
       }, 2000);
       console.log("Todo deleted successfully");
+
       window.location.reload();
     } catch (error) {
       setError(error.message);
@@ -418,7 +419,9 @@ console.log(selectedTab);
                   ) : (
                     <h2 className="empty-list-text">
                       {" "}
-                      {En ? "Empty list, Pls add todo" : "لا يوجد مهام، قم بإضافة واحدة"}
+                      {En
+                        ? "Empty list, Pls add todo"
+                        : "لا يوجد مهام، قم بإضافة واحدة"}
                     </h2>
                   )}
 
