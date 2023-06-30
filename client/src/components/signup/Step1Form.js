@@ -112,7 +112,7 @@ const handleSubmit = async (e) => {
                 </button>
               </>
             </div>
-            <div className="confirm-password">
+            <div className="password">
               <label> {En ? "Confirm Password:" : "تأكيد كلمة المرور"}</label>
               <input
                 type={showPassword ? "text" : "password"}

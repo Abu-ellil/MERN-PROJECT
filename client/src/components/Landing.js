@@ -18,7 +18,6 @@ import {
 } from "react-router-dom";
 import "./landing.css";
 
-
 const Landing = () => {
   const userId = window.localStorage.getItem("userId");
   const [profile, setProfile] = useState(false);
@@ -29,7 +28,7 @@ const Landing = () => {
   const [completedTodos, setCompletedTodos] = useState([]);
   const [activeTodos, setActiveTodos] = useState([]);
   const [error, setError] = useState("");
-  const [errPage , setErrPage]= useState('')
+  const [errPage, setErrPage] = useState("");
   const [message, setMessage] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
@@ -38,7 +37,9 @@ const Landing = () => {
     state: false,
     userOwner: userId,
   });
-  const [todosList, setTodosList] = useState([]);
+  const [todosList, setTodosList] = useState([
+    { text: "لا يوجد مهام قم باضافة واحدة." },
+  ]);
   const [selectedTab, setSelectedTab] = useState([todosList]);
   const mode = localStorage.getItem("darkMode");
 
@@ -75,7 +76,6 @@ const Landing = () => {
     e.target = "";
   };
 
-  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -135,7 +135,7 @@ const Landing = () => {
         setDoneTodos(doneTodos);
       } catch (error) {
         setError(error.message);
-        setErrPage(error)
+        setErrPage(error);
         setTimeout(() => {
           setError(null);
         }, 2000);
@@ -190,8 +190,8 @@ const Landing = () => {
         prevDoneTodos.filter((id) => id !== todoId)
       );
       console.log("Todo marked as not done");
-     
-     setMessage(En ? "Todo marked as Active" : "تم التعديل كنشط");
+
+      setMessage(En ? "Todo marked as Active" : "تم التعديل كنشط");
 
       setShowPopup(true);
       setTimeout(() => {
@@ -199,8 +199,8 @@ const Landing = () => {
         setShowPopup(false);
       }, 2000);
     } catch (error) {
-//       setError(error.message);
-// setErrPage(error)
+      //       setError(error.message);
+      // setErrPage(error)
       setTimeout(() => {
         setError(null);
       }, 2000);
@@ -221,14 +221,14 @@ const Landing = () => {
 
   const deleteCompletedTodos = async () => {
     try {
-     setMessage(En ? "PLS wait a sec" : "برجاء الانتظار قليلا");
-     setTimeout(() => {
-       setMessage(null);
-     }, 6000);
+      setMessage(En ? "PLS wait a sec" : "برجاء الانتظار قليلا");
+      setTimeout(() => {
+        setMessage(null);
+      }, 6000);
       await axios.delete(
         `https://mern-todo-project-my1v.onrender.com/todos/done/${userId}`
       );
-       
+
       setCompletedTodos([]);
       console.log("Completed todos cleared");
       setMessage(En ? "Completed todos cleared" : "تم مسح المكتمل");
@@ -294,7 +294,6 @@ const Landing = () => {
   const profileToggle = () => {
     setProfile(!profile);
   };
-
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
@@ -379,7 +378,7 @@ const Landing = () => {
 
                   {error ? (
                     <ErrorPage />
-                  ) : (
+                  ) : selectedTab.length > 0 ? (
                     selectedTab.map((todo) => (
                       <div className="list-item" key={todo._id + 2}>
                         <div className="check-todo">
@@ -416,7 +415,13 @@ const Landing = () => {
                         </button>
                       </div>
                     ))
+                  ) : (
+                    <h2 className="empty-list-text">
+                      {" "}
+                      {En ? "Empty list, Pls add todo" : "لا يوجد مهام، قم بإضافة واحدة"}
+                    </h2>
                   )}
+
                   {/* <AllTodos/> */}
                 </ul>
               </div>

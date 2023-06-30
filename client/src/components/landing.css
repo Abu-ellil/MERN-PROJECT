@@ -219,6 +219,10 @@
   animation: slideAnimation 1s ;
   /* opacity: 0; */
 }
+.empty-list-text{
+  text-align: center;
+  padding: 1rem;
+}
 .rtl .slide-content{
   background-color: var(--dark-color);
 }
