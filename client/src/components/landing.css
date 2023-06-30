@@ -207,6 +207,9 @@
   /* overflow: hidden; */
   position: relative;
 }
+.light-mode .slide-content{
+  background-color: var(--primary-color);
+}
 
 .slide-content {
   
@@ -214,7 +217,7 @@
   justify-content: center;
   align-items: center;
   color: #fff;
-  background-color: var(--primary-color);
+  /* background-color: var(--primary-color); */
   height: 100px;
   width: 250px;
   border-radius: 5px;
@@ -227,7 +230,7 @@
   text-align: center;
   padding: 1rem;
 }
-.rtl .slide-content{
+.dark-mode .slide-content{
   background-color: var(--dark-color);
 }
 .rtl .slide-content{
@@ -239,6 +242,8 @@
 .add{
   background-color: transparent;
   border: none;
+  padding: .5rem;
+  cursor: pointer;
 }
 
 @keyframes slideAnimation {
