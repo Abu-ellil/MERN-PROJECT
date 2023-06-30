@@ -1,9 +1,14 @@
-import backgroundImage from "../assets/main-cover.png";
 import React, { useState, useEffect } from "react";
-import night from "../assets/Combined Shape.svg";
+import Notification from "./popup/Notification";
 import { useCookies } from "react-cookie";
-import { Navbar } from "./nav/Navbar";
 import axios from "axios";
+import { Navbar } from "./nav/Navbar";
+import UserProfile from "./modify/UserProfile";
+import ErrorPage from "../errors/ErrorPage";
+import backgroundImage from "../assets/main-cover.png";
+import night from "../assets/Combined Shape.svg";
+import "./landing.css";
+
 import {
   BrowserRouter as Router,
   Routes,
@@ -12,7 +17,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import "./landing.css";
-import UserProfile from "./modify/UserProfile";
+
 
 const Landing = () => {
   const userId = window.localStorage.getItem("userId");
@@ -24,6 +29,7 @@ const Landing = () => {
   const [completedTodos, setCompletedTodos] = useState([]);
   const [activeTodos, setActiveTodos] = useState([]);
   const [error, setError] = useState("");
+  const [errPage , setErrPage]= useState('')
   const [message, setMessage] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
@@ -49,19 +55,18 @@ const Landing = () => {
     }
   }, []);
 
+  const toggelLang = (e) => {
+    e.preventDefault();
+    const updatedEn = !En;
+    localStorage.setItem("language", JSON.stringify(updatedEn));
+    setAr(updatedEn);
+  };
 
- const toggelLang = (e) => {
-   e.preventDefault();
-   const updatedEn = !En;
-   localStorage.setItem("language", JSON.stringify(updatedEn));
-   setAr(updatedEn);
- };
-
- const toggelMode = (e) => {
-   e.preventDefault();
-   localStorage.setItem("darkMode", String(!isDarkMode));
-   setIsDarkMode(!isDarkMode);
- };
+  const toggelMode = (e) => {
+    e.preventDefault();
+    localStorage.setItem("darkMode", String(!isDarkMode));
+    setIsDarkMode(!isDarkMode);
+  };
 
   const changeHandler = (e) => {
     e.preventDefault();
@@ -70,152 +75,7 @@ const Landing = () => {
     e.target = "";
   };
 
-  const addTodo = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post(
-        "https://mern-todo-project-my1v.onrender.com/todos",
-        todo
-      );
-      // alert("Todo added successfully");
-      setMessage("Todo added successfully");
-      setShowPopup(true);
-      setTimeout(() => {
-        setMessage(null);
-        setShowPopup(false);
-      }, 3000);
-      setTodo({
-        text: "",
-        state: false,
-        userOwner: userId,
-      });
-    } catch (error) {
-      setError(error);
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
-      console.log(error);
-      setMessage("Todo added successfully");
-      setShowPopup(true);
-      setTimeout(() => {
-        setMessage(null);
-        setShowPopup(false);
-      }, 3000);
-      setError("Todo added successfully");
-
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
-    }
-  };
-
-  const removeFromDone = async (todoId) => {
-    try {
-      await axios.delete(
-        `https://mern-todo-project-my1v.onrender.com/todos/done/${userId}/${todoId}`
-      );
-      setDoneTodos((prevDoneTodos) =>
-        prevDoneTodos.filter((id) => id !== todoId)
-      );
-      console.log("Todo marked as not done");
-      setMessage("Todo marked as Active");
-      setShowPopup(true);
-      setTimeout(() => {
-        setMessage(null);
-        setShowPopup(false);
-      }, 3000);
-    } catch (error) {
-      setError(error);
-
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
-      console.log(error);
-    }
-  };
-
-  const updateTodoState = async (e, todoId) => {
-    const isChecked = e.target.checked;
-    setTodo({ ...todo, state: isChecked });
-
-    if (isChecked) {
-      await addToDone(todoId);
-    } else {
-      await removeFromDone(todoId);
-    }
-  };
-
-  const deleteCompletedTodos = async () => {
-    try {
-      await axios.delete(
-        `https://mern-todo-project-my1v.onrender.com/todos/done/${userId}`
-      );
-      setCompletedTodos([]);
-      console.log("Completed todos cleared");
-      setMessage("Completed todos cleared");
-      setTimeout(() => {
-        setMessage(null);
-      }, 3000);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const addToDone = async (todoId) => {
-    try {
-      // Make API call to mark the todo as done
-      await axios.put("https://mern-todo-project-my1v.onrender.com/todos", {
-        todoId,
-        userId,
-      });
-      const completedTodo = activeTodos.find((todo) => todo._id === todoId);
-      setCompletedTodos((prevCompletedTodos) => [
-        ...prevCompletedTodos,
-        completedTodo,
-      ]);
-      setActiveTodos((prevActiveTodos) =>
-        prevActiveTodos.filter((todo) => todo._id !== todoId)
-      );
-      console.log("Todo marked as done");
-
-      setMessage("Todo marked as done");
-      setTimeout(() => {
-        setMessage(null);
-      }, 3000);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const isDone = (id) => doneTodos.includes(id);
-
-  const deleteTodoItem = async (todoId) => {
-    try {
-      await axios.delete(
-        `https://mern-todo-project-my1v.onrender.com/todos/${todoId}`
-      );
-      setTodosList((prevTodosList) =>
-        prevTodosList.filter((todo) => todo._id !== todoId)
-      );
-      setMessage("Todo deleted successfully");
-      setTimeout(() => {
-        setMessage(null);
-      }, 3000);
-      console.log("Todo deleted successfully");
-      window.location.reload();
-    } catch (error) {
-      setError(error);
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
-      console.log(error);
-    }
-  };
-
-  const profileToggle = () => {
-    setProfile(!profile);
-  };
-
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -226,10 +86,11 @@ const Landing = () => {
         setTodosList(response.data);
       } catch (error) {
         console.error(error);
-        setError(error);
+        setError(error.message);
+        setErrPage(error)
         setTimeout(() => {
           setError(null);
-        }, 3000);
+        }, 2000);
       }
     };
 
@@ -252,15 +113,15 @@ const Landing = () => {
         setCompletedTodos(doneTodos);
         setActiveTodos(notDoneTodos);
       } catch (error) {
-        setError(error);
         setTimeout(() => {
           setError(null);
-        }, 3000);
+        }, 2000);
         console.error(error);
-        setError(error);
+        setError(error.message);
+        setErrPage(error)
         setTimeout(() => {
           setError(null);
-        }, 3000);
+        }, 2000);
       }
     };
 
@@ -276,16 +137,173 @@ const Landing = () => {
         const doneTodos = response.data.done.filter((todo) => todo !== null);
         setDoneTodos(doneTodos);
       } catch (error) {
-        setError(error);
+        setError(error.message);
+        setErrPage(error)
         setTimeout(() => {
           setError(null);
-        }, 3000);
+        }, 2000);
         console.error(error);
       }
     };
 
     fetchDoneTodos();
   }, [activeTodos]);
+
+  const addTodo = async (e) => {
+    e.preventDefault();
+    try {
+      if (todo.text.trim() === "") {
+        throw new Error(
+          En ? "You have to write something" : "لابد من كتابة شيء"
+        );
+      }
+
+      await axios.post(
+        "https://mern-todo-project-my1v.onrender.com/todos",
+        todo
+      );
+
+      setMessage(En ? "Todo added successfully" : "تمت إضافة المهمة بنجاح");
+      setShowPopup(true);
+      setTimeout(() => {
+        setMessage(null);
+        setShowPopup(false);
+      }, 2000);
+
+      setTodo({
+        text: "",
+        state: false,
+        userOwner: userId,
+      });
+    } catch (error) {
+      setError(error.message);
+      setErrPage(errPage)
+      setTimeout(() => {
+        setError(null);
+      }, 2000);
+    }
+  };
+
+  const removeFromDone = async (todoId) => {
+    try {
+      await axios.delete(
+        `https://mern-todo-project-my1v.onrender.com/todos/done/${userId}/${todoId}`
+      );
+      setDoneTodos((prevDoneTodos) =>
+        prevDoneTodos.filter((id) => id !== todoId)
+      );
+      console.log("Todo marked as not done");
+     
+     setMessage(En ? "Todo marked as Active" : "تم التعديل كنشط");
+
+      setShowPopup(true);
+      setTimeout(() => {
+        setMessage(null);
+        setShowPopup(false);
+      }, 2000);
+    } catch (error) {
+      setError(error.message);
+setErrPage(error)
+      setTimeout(() => {
+        setError(null);
+      }, 2000);
+      console.log(error);
+    }
+  };
+
+  const updateTodoState = async (e, todoId) => {
+    const isChecked = e.target.checked;
+    setTodo({ ...todo, state: isChecked });
+
+    if (isChecked) {
+      await addToDone(todoId);
+    } else {
+      await removeFromDone(todoId);
+    }
+  };
+
+  const deleteCompletedTodos = async () => {
+    try {
+     setMessage(En ? "PLS wait a sec" : "برجاء الانتظار قليلا");
+     setTimeout(() => {
+       setMessage(null);
+     }, 6000);
+      await axios.delete(
+        `https://mern-todo-project-my1v.onrender.com/todos/done/${userId}`
+      );
+       
+      setCompletedTodos([]);
+      console.log("Completed todos cleared");
+      setMessage(En ? "Completed todos cleared" : "تم مسح المكتمل");
+      setTimeout(() => {
+        setMessage(null);
+      }, 2000);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const addToDone = async (todoId) => {
+    try {
+      // Make API call to mark the todo as done
+      await axios.put("https://mern-todo-project-my1v.onrender.com/todos", {
+        todoId,
+        userId,
+      });
+      const completedTodo = activeTodos.find((todo) => todo._id === todoId);
+      setCompletedTodos((prevCompletedTodos) => [
+        ...prevCompletedTodos,
+        completedTodo,
+      ]);
+      setActiveTodos((prevActiveTodos) =>
+        prevActiveTodos.filter((todo) => todo._id !== todoId)
+      );
+      console.log("Todo marked as done");
+
+      setMessage(En ? "Todo marked as done" : "تم الاضافة للمكتمل");
+      setTimeout(() => {
+        setMessage(null);
+      }, 2000);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const isDone = (id) => doneTodos.includes(id);
+
+  const deleteTodoItem = async (todoId) => {
+    try {
+      await axios.delete(
+        `https://mern-todo-project-my1v.onrender.com/todos/${todoId}`
+      );
+      setTodosList((prevTodosList) =>
+        prevTodosList.filter((todo) => todo._id !== todoId)
+      );
+      setMessage(En ? "Todo deleted successfully" : "تم المسح بنجاح");
+      setTimeout(() => {
+        setMessage(null);
+      }, 2000);
+      console.log("Todo deleted successfully");
+      window.location.reload();
+    } catch (error) {
+      setError(error.message);
+      setTimeout(() => {
+        setError(null);
+      }, 2000);
+      console.log(error);
+    }
+  };
+
+  const profileToggle = () => {
+    setProfile(!profile);
+  };
+
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      addTodo();
+    }
+  };
 
   return (
     <div
@@ -304,26 +322,17 @@ const Landing = () => {
           mode={!isDarkMode}
         />
 
-        <div
-          style={{
-            backgroundImage: `url(${backgroundImage})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            width: "100%",
-            height: "25vh",
-          }}
-        >
-          {message && (
-            <div>
-              <div className="pop-up">
-                <div className="slide-container">
-                  <div className="slide-content">{message}</div>
-                </div>
+        {message && (
+          <div>
+            <div className="pop-up">
+              <div className="slide-container">
+                <div className="slide-content">{message}</div>
               </div>
             </div>
-          )}
-          {error && <div className="error_msg pop-up">{error}</div>}
-        </div>
+          </div>
+        )}
+
+        {error && <div className="error_msg err">{error}</div>}
 
         {profile ? (
           <UserProfile profileToggle={profileToggle} />
@@ -340,7 +349,11 @@ const Landing = () => {
                 />
                 <span className="checkmark"></span>
               </label>
-              <form className="add-item" onBlur={addTodo}>
+              <form
+                className="add-item"
+                onBlur={addTodo}
+                onKeyPress={handleKeyPress}
+              >
                 <label htmlFor="text"></label>
                 <input
                   type="text"
@@ -358,36 +371,46 @@ const Landing = () => {
                 <ul className="todo-ul">
                   {/* <AllTodos/> */}
 
-                  {selectedTab.map((todo) => (
-                    <div className="list-item" key={todo._id}>
-                      <div className="check-todo">
-                        <label className="checkbox-container">
-                          <input
-                            type="checkbox"
-                            checked={isDone(todo._id)}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                addToDone(todo._id);
-                              } else {
-                                removeFromDone(todo._id);
-                              }
-                            }}
-                          />
-                          <span className="checkmark"></span>
-                        </label>
-                        <li className="item" key={todo._id}>
-                          {todo.text}
-                        </li>
+                  {error ? (
+                    <ErrorPage />
+                  ) : (
+                    selectedTab.map((todo) => (
+                      <div className="list-item" key={todo._id + 2}>
+                        <div className="check-todo">
+                          <label className="checkbox-container">
+                            <input
+                              type="checkbox"
+                              checked={isDone(todo._id)}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  addToDone(todo._id);
+                                } else {
+                                  removeFromDone(todo._id);
+                                }
+                              }}
+                            />
+                            <span className="checkmark"></span>
+                          </label>
+                          <li
+                            key={todo._id + 1}
+                            className={
+                              doneTodos.includes(todo._id)
+                                ? "done item"
+                                : "item"
+                            }
+                          >
+                            {todo.text}
+                          </li>
+                        </div>
+                        <button
+                          className="delete-button"
+                          onClick={() => deleteTodoItem(todo._id)}
+                        >
+                          X
+                        </button>
                       </div>
-                      <button
-                        className="delete-button"
-                        onClick={() => deleteTodoItem(todo._id)}
-                      >
-                        X
-                      </button>
-                    </div>
-                  ))}
-
+                    ))
+                  )}
                   {/* <AllTodos/> */}
                 </ul>
               </div>
