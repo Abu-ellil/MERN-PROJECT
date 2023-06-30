@@ -134,6 +134,13 @@
   border: none;
   color: var(--secondary-color);
 }
+.rtl .eye {
+    border: none;
+    color: var(--secondary-color);
+    position: absolute;
+    left: 30px;
+    top: 55%;
+}
 .rtl .left {
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;

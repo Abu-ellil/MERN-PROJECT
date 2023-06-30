@@ -21,7 +21,6 @@ const UserProfile = ({ profileToggle }) => {
         const response = await axios.get(
           `https://mern-todo-project-my1v.onrender.com/auth/${userId}`
         );
-        console.log(response);
         const { email, username, phone, birthYear } = response.data.user;
         setEmail(email);
         setUsername(username);
