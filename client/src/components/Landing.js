@@ -87,7 +87,7 @@ const Landing = () => {
       } catch (error) {
         console.error(error);
         setError(error.message);
-        setErrPage(error)
+        // setErrPage(error)
         setTimeout(() => {
           setError(null);
         }, 2000);
@@ -95,7 +95,7 @@ const Landing = () => {
     };
 
     fetchData();
-  }, [userId]);
+  }, []);
 
   useEffect(() => {
     const fetchCompletedTodos = async () => {
@@ -116,9 +116,6 @@ const Landing = () => {
         setTimeout(() => {
           setError(null);
         }, 2000);
-        console.error(error);
-        setError(error.message);
-        setErrPage(error)
         setTimeout(() => {
           setError(null);
         }, 2000);
@@ -126,7 +123,7 @@ const Landing = () => {
     };
 
     fetchCompletedTodos();
-  }, [userId, doneTodos, todosList, completedTodos, activeTodos]);
+  }, [completedTodos]);
 
   useEffect(() => {
     const fetchDoneTodos = async () => {
@@ -142,12 +139,12 @@ const Landing = () => {
         setTimeout(() => {
           setError(null);
         }, 2000);
-        console.error(error);
+        console.log(error);
       }
     };
 
     fetchDoneTodos();
-  }, [activeTodos]);
+  }, [doneTodos]);
 
   const addTodo = async (e) => {
     e.preventDefault();
@@ -176,8 +173,8 @@ const Landing = () => {
         userOwner: userId,
       });
     } catch (error) {
-      setError(error.message);
-      setErrPage(errPage)
+      // setError(error.message);
+      // setErrPage(errPage)
       setTimeout(() => {
         setError(null);
       }, 2000);
@@ -202,8 +199,8 @@ const Landing = () => {
         setShowPopup(false);
       }, 2000);
     } catch (error) {
-      setError(error.message);
-setErrPage(error)
+//       setError(error.message);
+// setErrPage(error)
       setTimeout(() => {
         setError(null);
       }, 2000);
@@ -321,7 +318,15 @@ setErrPage(error)
           en={En}
           mode={!isDarkMode}
         />
-
+        <div
+          style={{
+            backgroundImage: `url(${backgroundImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            width: "100%",
+            height: "25vh",
+          }}
+        ></div>
         {message && (
           <div>
             <div className="pop-up">
@@ -364,6 +369,7 @@ setErrPage(error)
                   value={todo.text}
                 />
               </form>
+              <button className="add">➕</button>
             </div>
             {/* ************************* */}
             <div className="todos-pages">

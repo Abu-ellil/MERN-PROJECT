@@ -36,13 +36,9 @@
  }
 
 
- 
- /* .dark-mode  {}
- .dark-mode  {}
- .dark-mode  {}
- .dark-mode  {}
- .dark-mode  {}
- .dark-mode  {}
- .dark-mode  {}
- .dark-mode  {}
- .dark-mode  {} */
+
+
+
+
+ .dark-mode body {background-color: var(--dark-color);
+}
