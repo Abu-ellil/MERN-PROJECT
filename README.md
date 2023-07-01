@@ -3,6 +3,7 @@
 This is a MERN (MongoDB, Express, React, Node.js) project that serves as a starting point for building a full-stack web application.
 # Demo
 https://mern-project-todo-kalbonyan.vercel.app/
+<img src="https://user-images.githubusercontent.com/94858304/250264715-31cbb966-2312-4e9d-b5ec-c5ab299070af.png" alt="MERN Project Todo" >
 ## Features
 
 - Feature 1: Describe the main features of your project.
