@@ -1,4 +1,5 @@
 .login_container {
+  background-image: url('../../assets/main-cover.png');
   width: 100%;
   min-height: 100vh;
   background-color: #f5f5f5;
