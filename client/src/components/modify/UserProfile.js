@@ -14,7 +14,6 @@ const UserProfile = ({ profileToggle }) => {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const userId = window.localStorage.getItem("userId");
-
   useEffect(() => {
     const fetchUserData = async () => {
       try {

@@ -31,9 +31,11 @@
  }
  .dark-mode  .profile-form {   background-color: var(--shadow-color);
   color: #f5f5f5;}
- .dark-mode  .pinput{
-    background-color: var(--secondary-color);
+ .dark-mode  .com-not {
+    background-color: var(--shadow-color);
  }
+ 
+
 
 
 
