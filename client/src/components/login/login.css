@@ -136,10 +136,11 @@
   color: var(--secondary-color);
 }
 .rtl .eye {
+  background-color: transparent;
     border: none;
     color: var(--secondary-color);
     position: absolute;
-    left: 30px;
+    left: -160px;
     top: 55%;
 }
 .rtl .left {
