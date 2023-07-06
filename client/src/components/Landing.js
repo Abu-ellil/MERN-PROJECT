@@ -369,7 +369,9 @@ const Landing = () => {
                   value={todo.text}
                 />
               </form>
-              <button className="add">➕</button>
+              <button onClick={handleKeyPress} className="add">
+                ➕
+              </button>
             </div>
             {/* ************************* */}
             <div className="todos-pages">

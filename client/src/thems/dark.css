@@ -11,6 +11,9 @@
   background-color: var(--shadow-color);
   color: #f5f5f5;
 }
+.dark-mode .pinput {
+  background-color: #404363;
+}
 .dark-mode .todos-pages {
   background-color: var(--shadow-color);
   color: #f5f5f5;
