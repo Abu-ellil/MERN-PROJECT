@@ -32,7 +32,7 @@ const handleSubmit = async (e) => {
 
   try {
     const response = await axios.post(
-      "https://mern-todo-project-my1v.onrender.com/auth/register",
+      "https://server1-aejd.onrender.com/auth/register",
       {
         email,
         password,

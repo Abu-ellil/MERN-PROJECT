@@ -18,7 +18,7 @@ const Step2Form = ({ handleComplete, userId,toggleLang,en }) => {
     e.preventDefault();
     try {
       await axios.post(
-        `https://mern-todo-project-my1v.onrender.com/auth/register/${userId}`,
+        `https://server1-aejd.onrender.com/auth/register/${userId}`,
         {
           username,
           phone,

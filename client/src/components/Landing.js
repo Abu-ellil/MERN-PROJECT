@@ -78,7 +78,7 @@ const Landing = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `https://mern-todo-project-my1v.onrender.com/todos?userId=${userId}`
+          `https://server1-aejd.onrender.com/todos?userId=${userId}`
         );
         setSelectedTab(response.data);
         setTodosList(response.data);
@@ -99,7 +99,7 @@ const Landing = () => {
     const fetchCompletedTodos = async () => {
       try {
         const response = await axios.get(
-          `https://mern-todo-project-my1v.onrender.com/todos/done/${userId}`
+          `https://server1-aejd.onrender.com/todos/done/${userId}`
         );
         const doneTodos = response.data.done.filter((todo) => todo !== null);
 
@@ -125,7 +125,7 @@ const Landing = () => {
     const fetchDoneTodos = async () => {
       try {
         const response = await axios.get(
-          `https://mern-todo-project-my1v.onrender.com/todos/done/ids/${userId}`
+          `https://server1-aejd.onrender.com/todos/done/ids/${userId}`
         );
         const doneTodos = response.data.done.filter((todo) => todo !== null);
         setDoneTodos(doneTodos);
@@ -151,7 +151,7 @@ const Landing = () => {
         );
       }
       const response = await axios.post(
-        "https://mern-todo-project-my1v.onrender.com/todos",
+        "https://server1-aejd.onrender.com/todos",
         todo
       );
       setTodosList((prevTodosList) => [...prevTodosList, response.data]);
@@ -181,7 +181,7 @@ const Landing = () => {
   const removeFromDone = async (todoId) => {
     try {
       await axios.delete(
-        `https://mern-todo-project-my1v.onrender.com/todos/done/${userId}/${todoId}`
+        `https://server1-aejd.onrender.com/todos/done/${userId}/${todoId}`
       );
       setDoneTodos((prevDoneTodos) =>
         prevDoneTodos.filter((id) => id !== todoId)
@@ -223,7 +223,7 @@ const Landing = () => {
         setMessage(null);
       }, 6000);
       await axios.delete(
-        `https://mern-todo-project-my1v.onrender.com/todos/done/${userId}`
+        `https://server1-aejd.onrender.com/todos/done/${userId}`
       );
 
       setCompletedTodos([]);
@@ -240,7 +240,7 @@ const Landing = () => {
   const addToDone = async (todoId) => {
     try {
      
-      await axios.put("https://mern-todo-project-my1v.onrender.com/todos", {
+      await axios.put("https://server1-aejd.onrender.com/todos", {
         todoId,
         userId,
       });
@@ -269,7 +269,7 @@ const Landing = () => {
   const deleteTodoItem = async (todoId) => {
     try {
       const response = await axios.delete(
-        `https://mern-todo-project-my1v.onrender.com/todos/${todoId}`
+        `https://server1-aejd.onrender.com/todos/${todoId}`
       );
       console.log(response);
         setTodosList((prevTodosList) =>
